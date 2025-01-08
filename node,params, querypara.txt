@@ -1,0 +1,62 @@
+/*
+WOrking of the params data :
+
+const express =require('express')
+
+const app=express();
+
+app.use(express.json())
+
+app.get('/userid/:id',(req,res)=>{
+
+    const theId=req.params.id;
+
+    res.status(200).send(`the id of the student is:${theId}`)
+})
+
+app.listen(3000,()=>{
+    console.log("the server is number on the port number on 3000")
+})
+
+URL: http://localhost:3000/userid/123
+
+OUTPUT: the id of the student is:123
+
+*/
+
+// the way of working with the query string :
+
+/*
+
+const express = require('express');
+
+const app=express();
+
+app.use(express.json())
+
+app.get('/user',(req,res)=>{
+
+    const theId=parseInt(req.query.id,10)  // Convert the id to an integer
+    const theName=req.query.name;
+
+    if(theId>70 && theName.length===4){
+        res.status(200).send(`The user id is ${theId} and the name is ${theName}`);
+
+    }
+    else{
+        res.status(400).send(`Invalid input id or name length`)
+    }
+
+   
+
+});
+
+app.listen(3000,()=>{
+    console.log("The server is running on the port number:3000")
+})
+
+*/
+
+// http://localhost:3000/user?id=1234&name=sachin
+// the out put : The user id is 1234 and the name is saci
+
