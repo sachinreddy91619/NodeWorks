@@ -1,0 +1,293 @@
+
+ .env
+========>
+MONGO_URL="mongodb+srv://ksbussiness123:dtApS0hEVTPRFWvt@clustertask.sbqrb.mongodb.net/qodicTask"
+
+JWT_SECRET=demotask
+
+PORT=7788
+
+
+
+app.js
+=========>
+
+
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
+const authRoutes = require('./routes/authRoutes');
+const curdRoutes = require('./routes/curdRoutes');
+
+require('dotenv').config(); // Load environment variables
+
+const app = express();
+
+// Middleware
+// app.use(bodyParser.json());
+
+// Middleware
+app.use(express.json());
+
+// Database connection
+mongoose.connect(process.env.MONGO_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/todos', curdRoutes);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Internal Server Error' });
+});
+
+// Server setup
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
+Routes:
+
+authRoutes.js
+===================>
+
+const express = require('express');
+const { registerUser, loginUser } = require('../controllers/authenCon');
+
+const router = express.Router();
+
+router.post('/register', registerUser);
+router.post('/login', loginUser);
+
+module.exports = router;
+
+
+curdRoutes.js
+=====================>
+const express = require('express');
+const { createTodo, getTodos, getTodoById, updateTodo, deleteTodo } = require('../controllers/CrudOper');
+const authenticateToken = require('../middleware/authmiddle');
+
+const router = express.Router();
+
+router.post('/', authenticateToken, createTodo);
+router.get('/', authenticateToken, getTodos);
+router.get('/:id', authenticateToken, getTodoById);
+router.put('/:id', authenticateToken, updateTodo);
+router.delete('/:id', authenticateToken, deleteTodo);
+
+module.exports = router;
+
+
+
+models
+
+User.js
+==============>
+
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+
+const UserSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+});
+
+// Pre-save hook for hashing passwords
+UserSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+module.exports = mongoose.model('User', UserSchema);
+
+
+
+Todo.js
+===============>
+
+const mongoose = require('mongoose');
+
+const TodoSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String },
+  state: { type: String, enum: ['completed', 'incomplete'], default: 'incomplete' },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+});
+
+module.exports = mongoose.model('Todo', TodoSchema);
+
+
+middleware
+
+authmiddle.js
+==================>
+
+const jwt = require('jsonwebtoken');
+
+module.exports = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ error: 'Forbidden' });
+    req.user = user;
+    next();
+  });
+};
+
+
+controllers:
+
+CrudOper.js
+===================>
+const Todo = require('../models/Todo');
+
+exports.createTodo = async (req, res) => {
+    const { title, description, state } = req.body;
+
+    try {
+        const todo = new Todo({
+            title,
+            description,
+            state,
+            userId: req.user.id,
+        });
+        await todo.save();
+        res.status(201).json(todo);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+exports.getTodos = async (req, res) => {
+    try {
+        const todos = await Todo.find({ userId: req.user.id });
+        res.json(todos);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+exports.getTodoById = async (req, res) => {
+    try {
+        const todo = await Todo.findById(req.params.id);
+        if (!todo || todo.userId.toString() !== req.user.id) {
+            return res.status(404).json({ error: 'To-do not found' });
+        }
+        res.json(todo);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+exports.updateTodo = async (req, res) => {
+    const { title, description, state } = req.body;
+
+    try {
+        const todo = await Todo.findById(req.params.id);
+        if (!todo || todo.userId.toString() !== req.user.id) {
+            return res.status(404).json({ error: 'To-do not found' });
+        }
+
+        if (title) todo.title = title;
+        if (description) todo.description = description;
+        if (state) todo.state = state;
+
+        await todo.save();
+        res.json(todo);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+exports.deleteTodo = async (req, res) => {
+    try {
+        const todo = await Todo.findById(req.params.id);
+        if (!todo || todo.userId.toString() !== req.user.id) {
+            return res.status(404).json({ error: 'To-do not found' });
+        }
+
+        await todo.deleteOne();
+        res.json({ message: 'To-do deleted successfully' });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+authenCon.js
+==============>
+
+const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
+exports.registerUser = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = new User({ username, password });
+    await user.save();
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+exports.loginUser = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.json({ token });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+package.json
+==================>
+
+{
+  "name": "todoapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.9",
+    "supertest": "^7.0.0"
+  }
+}
+
+
