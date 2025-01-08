@@ -1,0 +1,1094 @@
+
+
+Regularly check for vulnerabilities in your dependencies using: 
+npm audit
+
+Fix vulnerabilities using:
+npm audit fix
+
+
+
+Environment Variables :
+Use .env for sensitive data: Store secrets (e.g., API keys, database URIs) in environment variables and never hardcode them.
+
+Validate environment variables: Use libraries like dotenv 
+
+
+Secure Data Communication :
+
+Implement middleware like helmet to set secure HTTP headers:
+npm install helmet
+
+const helmet = require("helmet");
+app.use(helmet());
+
+Rate Limiting and DDoS Protection :
+.> Use express-rate-limit to prevent brute force and DDoS attacks:
+npm install express-rate-limit
+
+
+const rateLimit = require("express-rate-limit");
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+});
+app.use(limiter);
+
+
+==================>==============>==============>==============>==============>==============>==============>==========>
+
+app.use('/api/auth', authRoutes);
+app.use('/api/todos', todoRoutes);
+
+
+
+..> The app.use() function applies the middleware or routes to specific paths.
+
+...> All routes defined in authRoutes will automatically be prefixed with /api/auth. Similarly, all routes in curdRoutes will be prefixed with /api/todos.
+
+..> Yes, technically you could write the app.use('/api/auth', authRoutes) and app.use('/api/todos', curdRoutes) somewhere else
+
+
+..> The app.js (or server.js) file serves as the main entry point of your application.
+It provides an overview of how the app is structured: middleware, database connection, and routes.
+
+
+
+
+..> he route prefixes (/api/auth and /api/todos) are middleware definitions.
+Middleware must be registered with the app instance before your server starts handling requests.
+
+
+..> Clear API Structure for Developers
+
+Placing route registrations in app.js provides a single location where developers can see all the routes and their prefixes at a glance.
+
+
+
+
+....> While route logic is separated into modules like authRoutes and curdRoutes, the responsibility for setting up route prefixes and registering them belongs to the main app file.
+
+
+...> while app.js handles the overall app configuration.
+
+app.use('/api/auth', authRoutes);
+app.use('/api/todos', todoRoutes);
+These lines connect the imported logic (authRoutes and todoRoutes) to your main app.
+
+/api/auth: This is the base URL for the authentication-related endpoints (e.g., login, register). Any requests starting with /api/auth will be handled by the authRoutes module.
+/api/todos: This is the base URL for to-do-related endpoints (e.g., create, delete, edit a to-do). Any requests starting with /api/todos will be handled by the todoRoutes module.
+
+
+
+he app.use statements apply those routes to specific URL paths in the app.
+
+==================>==============>==============>==============>==============>==============>==============>==========>
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Internal Server Error' });
+});
+
+
+
+he err.stack property in JavaScript provides detailed information about an error, particularly the call stack at the moment the error occurred. Here's what it does and why it's useful:
+
+What is err.stack?
+It contains a string representation of the stack trace.
+The stack trace shows the sequence of function calls that led to the error, including the file names and line numbers.
+
+
+
+
+
+
+Why is it useful?
+Debugging:
+
+Helps you trace where the error originated and which functions were called before it happened.
+This makes it much easier to locate and fix bugs.
+Detailed Logs:
+
+When you log err.stack, it provides a clear picture of the error flow, making logs more informative.
+Error Reporting:
+
+Useful for error monitoring tools (e.g., Sentry) that rely on stack traces to identify patterns in errors.
+Without err.stack:
+You might only get the error message (e.g., "Something bad happened"), which doesn’t tell you where or why the error occurred.
+
+
+
+In MongoDB (with Mongoose), the options useNewUrlParser: true and useUnifiedTopology: true are used to ensure compatibility and to avoid deprecation warnings when connecting to a MongoDB database. Here's what each option does:
+
+1. useNewUrlParser: true
+Why it's used: This tells Mongoose to use the new URL parser from the MongoDB driver instead of the old, deprecated one.
+What it does: The new URL parser is better at parsing MongoDB connection strings, especially ones that include special characters or use modern connection options.
+Example Problem Solved: Older parsers might misinterpret certain characters like @ or % in connection strings, causing errors. The new parser handles these correctly.
+2. useUnifiedTopology: true
+Why it's used: This enables the new unified topology engine in the MongoDB driver, which provides a more robust and modern approach to connection handling.
+What it does:
+Improves connection monitoring and management.
+Handles replica sets and sharded clusters more efficiently.
+Reduces issues with long-running connections, retries, and failovers.
+Example Problem Solved: Older topology engines could cause issues like incorrect reconnection handling or performance bottlenecks in complex setups.
+
+
+
+
+==================>==============>==============>==============>==============>==============>==============>==========>
+
+
+
+const mongoose = require('mongoose');
+
+// This line imports the Mongoose library.
+
+const TodoSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String },
+  state: { type: String, enum: ['completed', 'incomplete'], default: 'incomplete' },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+});
+
+module.exports = mongoose.model('Todo', TodoSchema);
+
+
+state (to track if the to-do is done or not).
+Type: String (text data).
+enum: This restricts the value to only two options: 'completed' or 'incomplete'.
+Default: If you don’t specify a value, it will automatically be 'incomplete'.
+
+.> userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
+
+
+
+userId (connects the to-do to a specific user).
+Type: mongoose.Schema.Types.ObjectId (a special type used for MongoDB IDs).
+ref: 'User': This tells Mongoose that userId refers to the User collection in the database. It’s like saying, "This to-do belongs to a specific user."
+Required: true (every to-do must be associated with a user).
+
+userId: { type: 'ObjectId', ref: 'User', required: true }
+ it is also correct:
+
+==================>==============>==============>==============>==============>==============>==============>==========>
+
+
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+
+const UserSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+});
+
+// Pre-save hook for hashing passwords
+UserSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+module.exports = mongoose.model('User', UserSchema);
+
+
+UserSchema.pre('save', async function () {
+  this.password = await bcrypt.hash(this.password, 10);
+});
+
+....> The hashed password is saved into the this.password field.
+
+...> this.password refers to the password field in the current user document.
+
+
+...> bcrypt: This is another library, used to hash and encrypt passwords. Hashing is the process of turning the actual password into a secret string of characters that can't be easily reversed.
+
+..> the 10 refers to the number of salt rounds used during the password hashing process in bcrypt.
+
+
+..> Salt is a random value added to the password before hashing to ensure that even if two users have the same password, their hashed values will be different.
+
+
+
+..> No, the number 10 is not mandatory; 
+
+==================>==============>==============>==============>==============>==============>==============>==========>
+
+middleware/authMiddleware.js
+=----------------------------------->>>
+
+const jwt = require('jsonwebtoken');
+
+module.exports = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ error: 'Forbidden' });
+    req.user = user;
+    next();
+  });
+};
+
+
+....> jwt: Refers to the JSON Web Token (JWT) library. It is used to create and verify tokens, which are often used for authentication and authorization.
+
+..> req: The request object that contains information about the incoming HTTP request (like headers, body, etc.).
+
+
+..> res: The response object used to send a response back to the client.
+
+..> authHeader: This is a variable where we store the value of the authorization header from the request.
+
+...> req.headers: This accesses the headers of the incoming request. Headers contain metadata about the request, like the type of content or authorization information.
+
+
+... >  The authorization header is typically where a client sends their authentication token (like a JWT) to prove their identity.
+
+
+..> authHeader.split(' '): This splits the authorization header string into an array based on spaces. Typically, an authorization header is in the format Bearer <token>, where Bearer is the first part, and the token is the second part.
+
+..> authHeader.split(' ')[1]: This retrieves the second part of the split string, which is the actual token.
+
+..> req.user=user;
+you are adding user information to the request so that other parts of the application can easily access it.
+
+
+EX :
+
+app.get('/admin', (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+  res.send('Welcome, admin!');
+});
+
+
+==================>==============>==============>==============>==============>==============>==============>==========>
+
+
+const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
+exports.registerUser = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = new User({ username, password });
+    await user.save();
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+// handles the login requests.
+
+exports.loginUser = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.json({ token });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+
+...> exports.registerUser: This makes the registerUser function available to be used in other parts of the application.
+
+.> req represents the request from the client (including data like username and password), 
+
+...>  and res represents the response the server sends back.
+
+
+..> req.body: This contains the data sent by the client (like username and password).
+
+
+..> This creates a new user object using the User model, setting the username and password fields based on the client input.
+
+..> await: This makes sure the code waits for the user.save() operation to complete before moving on. user.save() saves the new user to the database.
+
+
+..> User.findOne({ username }): Searches the database for a user with the given username. 
+
+..> bcrypt.compare(password, user.password): Compares the entered password (from req.body) with the hashed password stored in the database.
+
+..> jwt.sign(): Creates a JWT token using the user’s unique id.
+
+
+..> Sends the created token back to the client in the response.
+
+
+==================>==============>==============>==============>==============>==============>==============>==========>
+
+
+
+const Todo = require('../models/Todo');
+
+exports.createTodo = async (req, res) => {
+  const { title, description, state } = req.body;
+
+  try {
+    const todo = new Todo({
+      title,
+      description,
+      state,
+      userId: req.user.id,
+    });
+    await todo.save();
+    res.status(201).json(todo);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+
+// ...> require() → A Node.js function that imports a file or module.
+
+// ...> async → Allows the function to handle asynchronous operations (like database calls).
+
+// ...> req.body → Represents the data sent in the HTTP request (like JSON input).
+
+
+// ...> userId: req.user.id → Adds the user ID (from req.user) to associate the to-do with a specific user.
+
+
+
+
+exports.getTodos = async (req, res) => {
+  try {
+    const todos = await Todo.find({ userId: req.user.id });
+    res.json(todos);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+
+//...> The name of the function that fetches a list of to-do items.
+
+//...> userId (in the database) matches req.user.id (the logged-in user's ID).
+
+//===> 
+
+
+exports.getTodoById = async (req, res) => {
+  try {
+    const todo = await Todo.findById(req.params.id);
+    if (!todo || todo.userId.toString() !== req.user.id) {
+      return res.status(404).json({ error: 'To-do not found' });
+    }
+    res.json(todo);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+
+//..> The name of the function to fetch a single to-do by its ID.
+
+//..> Todo.findById() → Looks for a to-do item in the database by its unique ID.
+
+
+// --> req.params.id → Gets the ID from the request URL.
+
+
+/// ..> req.params contains route parameters that are part of the URL path.
+
+// /...> These parameters are often used to pass identifiers like IDs for specific resources (e.g., a to-do item) in REST APIs.
+
+
+/// ... > When the client sends a request to /todos/12345, 12345 will be available as req.params.id inside the function.
+
+
+
+
+
+exports.updateTodo = async (req, res) => {
+  const { title, description, state } = req.body;
+
+  try {
+    const todo = await Todo.findById(req.params.id);
+    if (!todo || todo.userId.toString() !== req.user.id) {
+      return res.status(404).json({ error: 'To-do not found' });
+    }
+
+    if (title) todo.title = title;
+//..> If title is provided in the request, update the title field.
+
+//..> If description is provided, update it.
+
+    if (description) todo.description = description;
+
+    if (state) todo.state = state;
+
+    await todo.save();
+    res.json(todo);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+exports.deleteTodo = async (req, res) => {
+  try {
+    const todo = await Todo.findById(req.params.id);
+    if (!todo || todo.userId.toString() !== req.user.id) {
+      return res.status(404).json({ error: 'To-do not found' });
+    }
+
+    await todo.deleteOne();
+    res.json({ message: 'To-do deleted successfully' });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+
+
+
+// ..> Deletes the to-do from the database.
+
+// ..> 
+
+
+
+
+
+
+
+==================>==============>==============>==============>==============>==============>==============>==========>
+routes/authRoutes.js
+javascript
+Copy code
+const express = require('express');
+
+// express is a web framework for Node.js that helps build web applications and APIs.
+
+const { registerUser, loginUser } = require('../controllers/authController');
+
+
+
+
+..> This imports the module located at ../controllers/authController.js. This file likely contains the logic for handling user registration and login, and inside this file, we expect the functions registerUser and loginUser
+
+const router = express.Router();
+
+
+...> express.Router() → This is a method provided by Express that creates a router object. A router is used to handle different HTTP requests (like GET, POST, PUT, DELETE) for specific routes (URLs) in the application.
+
+router.post('/register', registerUser);
+
+..> '/register' → The route or path that is being handled
+
+
+...> registerUser → This is the callback function that will be executed when a POST request is made to /register. It is imported from the authController. This function will contain the logic for handling user registration, such as creating a new user in the database.
+
+
+
+router.post('/login', loginUser);
+
+
+...> /login' → This defines the route /login. It listens for POST requests sent to this URL.
+
+
+..> loginUser → The callback function for handling user login. This function is also imported from authController. It contains the logic for authenticating the user (e.g., checking username and password).
+
+
+
+
+module.exports = router;
+
+
+
+==================>==============>==============>==============>==============>==============>==============>==========>
+
+const express = require('express');
+
+const { createTodo, getTodos, getTodoById, updateTodo, deleteTodo }=require('../controllers/todoController');
+
+// ..> controllers/todoController.js. This file contains the logic for handling CRUD (Create, Read, Update, Delete) operations related to to-do items.
+
+const authenticateToken = require('../middleware/authMiddleware');
+
+// ...> authenticateToken → This is the name of the variable where we store the imported function or middleware.
+
+
+// ....> This middleware is responsible for verifying if the user is authenticated by checking the provided token.
+
+const router = express.Router();
+
+// ...> router → The name of the variable that will hold the Express router object.
+
+router.post('/', authenticateToken, createTodo);
+
+// .> router.post() → This defines a POST request handler on the specified route (/).
+
+// .> authenticateToken → This is the middleware function imported earlier. It will run first, checking if the request has a valid authentication token. If it’s not valid, it will block access to the route.
+
+
+// .> createTodo → This is the function (imported from todoController) that handles the logic for creating a new to-do item. It will run only if the authentication token is valid.
+
+router.get('/', authenticateToken, getTodos);
+
+
+..> router.get() → This defines a GET request handler for the route (/)
+
+..> authenticateToken → The middleware that ensures the user is authenticated before allowing access to the route.
+
+..> getTodos → This is the function (imported from todoController) that handles the logic for fetching all the to-do items for the authenticated user.
+
+
+
+
+router.get('/:id', authenticateToken, getTodoById);
+
+
+
+
+..>> authenticateToken → The middleware that ensures the user is authenticated before accessing this route.
+
+
+..>> getTodoById → This is the function (imported from todoController) that handles fetching a specific to-do item by its id.
+
+
+
+router.put('/:id', authenticateToken, updateTodo);
+router.delete('/:id', authenticateToken, deleteTodo);
+
+module.exports = router;
+
+
+=================>==============>==============>==============>==============>==============>==============>==========>
+
+
+..> / is the root path of a website or server. It’s like the homepage or the main address of the server.
+
+..> The event here is an incoming POST request. A POST request is a type of message sent to the server, often used when you want to send data to the server (like filling out a form).
+
+
+..> Listening for events means the server is waiting for something to happen.
+In this case, the server is set up to wait for POST requests at a specific location (the / path).
+
+..> When someone sends a POST request to /, the server reacts by executing specific code (like adding a new item to a to-do list)
+
+=================>==============>==============>==============>==============>==============>==============>==========>
+
+router.get('/:id', authenticateToken, getTodoById);
+
+
+..> This line is for a route with a dynamic parameter :id .
+
+..> router.get() is defining a route handler for GET requests.
+
+..> The /:id part means the route expects a dynamic value in the URL after the /
+
+..> /1 --> id=1.
+
+..>> /23 --> id=23.
+
+..> The dynamic part (:id) is captured and made available in req.params.id inside the server logic.
+
+
+Client-Side Request:
+
+.> A user or client (like a web browser, mobile app, or Postman) makes a GET request to the server with a specific id in the URL.
+
+..> The authenticateToken function is a middleware that runs before the actual route handler (getTodoById).
+
+..> Validate the user’s token (like a password or key) to ensure they’re authorized to access the data.
+
+..> If the token is invalid, the middleware usually sends an error response and stops further execution.
+
+..> If the token is valid, the server proceeds to execute the getTodoById function.
+
+..>  The id from the URL (e.g., 42) is accessed using req.params.id.
+
+..> The server uses this id to fetch the corresponding data (e.g., a to-do item) from its database.
+
+
+..> The server extracts id = 42 from the URL (req.params.id).
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>+++++++++++++++++++++++++++++++++++++>+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>
+
+
+
+
+
+Folder Structure
+bash
+Copy code
+ToDoApp/
+├── controllers/
+│   ├── authController.js
+│   ├── todoController.js
+├── middleware/
+│   └── authMiddleware.js
+├── models/
+│   ├── Todo.js
+│   ├── User.js
+├── routes/
+│   ├── authRoutes.js
+│   ├── todoRoutes.js
+├── tests/
+│   └── todoRoutes.test.js
+├── .env
+├── app.js
+├── package.json
+├── README.md
+Implementation
+1. app.js (Main Application File)
+javascript
+Copy code
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
+const authRoutes = require('./routes/authRoutes');
+const todoRoutes = require('./routes/todoRoutes');
+
+dotenv.config(); // Load environment variables
+
+const app = express();
+
+// Middleware
+app.use(bodyParser.json());
+
+// Database connection
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/todos', todoRoutes);
+
+// Error handling middleware CENTRALIZED ERROR HANDLING MIDDLEWARE.
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Internal Server Error' });
+});
+
+// Server setup
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+2. Models
+models/User.js
+javascript
+Copy code
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+
+const UserSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+});
+
+// Pre-save hook for hashing passwords
+UserSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+module.exports = mongoose.model('User', UserSchema);
+models/Todo.js
+javascript
+Copy code
+const mongoose = require('mongoose');
+
+const TodoSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String },
+  state: { type: String, enum: ['completed', 'incomplete'], default: 'incomplete' },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+});
+
+module.exports = mongoose.model('Todo', TodoSchema);
+3. Middleware
+middleware/authMiddleware.js
+javascript
+Copy code
+const jwt = require('jsonwebtoken');
+
+module.exports = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ error: 'Forbidden' });
+    req.user = user;
+    next();
+  });
+};
+4. Controllers
+controllers/authController.js
+javascript
+Copy code
+const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
+exports.registerUser = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = new User({ username, password });
+    await user.save();
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+exports.loginUser = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.json({ token });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+controllers/todoController.js
+javascript
+Copy code
+const Todo = require('../models/Todo');
+
+exports.createTodo = async (req, res) => {
+  const { title, description, state } = req.body;
+
+  try {
+    const todo = new Todo({
+      title,
+      description,
+      state,
+      userId: req.user.id,
+    });
+    await todo.save();
+    res.status(201).json(todo);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+exports.getTodos = async (req, res) => {
+  try {
+    const todos = await Todo.find({ userId: req.user.id });
+    res.json(todos);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+exports.getTodoById = async (req, res) => {
+  try {
+    const todo = await Todo.findById(req.params.id);
+    if (!todo || todo.userId.toString() !== req.user.id) {
+      return res.status(404).json({ error: 'To-do not found' });
+    }
+    res.json(todo);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+exports.updateTodo = async (req, res) => {
+  const { title, description, state } = req.body;
+
+  try {
+    const todo = await Todo.findById(req.params.id);
+    if (!todo || todo.userId.toString() !== req.user.id) {
+      return res.status(404).json({ error: 'To-do not found' });
+    }
+
+    if (title) todo.title = title;
+    if (description) todo.description = description;
+    if (state) todo.state = state;
+
+    await todo.save();
+    res.json(todo);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+exports.deleteTodo = async (req, res) => {
+  try {
+    const todo = await Todo.findById(req.params.id);
+    if (!todo || todo.userId.toString() !== req.user.id) {
+      return res.status(404).json({ error: 'To-do not found' });
+    }
+
+    await todo.deleteOne();
+    res.json({ message: 'To-do deleted successfully' });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+5. Routes
+routes/authRoutes.js
+javascript
+Copy code
+const express = require('express');
+const { registerUser, loginUser } = require('../controllers/authController');
+
+const router = express.Router();
+
+router.post('/register', registerUser);
+router.post('/login', loginUser);
+
+module.exports = router;
+routes/todoRoutes.js
+javascript
+Copy code
+const express = require('express');
+const { createTodo, getTodos, getTodoById, updateTodo, deleteTodo } = require('../controllers/todoController');
+const authenticateToken = require('../middleware/authMiddleware');
+
+const router = express.Router();
+
+router.post('/', authenticateToken, createTodo);
+router.get('/', authenticateToken, getTodos);
+router.get('/:id', authenticateToken, getTodoById);
+router.put('/:id', authenticateToken, updateTodo);
+router.delete('/:id', authenticateToken, deleteTodo);
+
+module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+==============================================================>===================================>===================================>===================================>========>
+==============================================================>===================================>===================================>===================================>========>
+==============================================================>===================================>===================================>===================================>========>
+==============================================================>===================================>===================================>===================================>========>
+==============================================================>===================================>===================================>===================================>========>
+==============================================================>===================================>===================================>===================================>========>
+
+
+....> The Authorization HTTP header is commonly used to send credentials or tokens to authenticate a client with a server.
+
+
+...> The term "Bearer" indicates a token-based authentication scheme.
+
+..> The client (e.g., a frontend app) includes the token in the request, and the server uses it to verify the client's identity and permissions.
+
+..> Bearer means "the one who holds this token."
+
+..> The <JWT_TOKEN> is a JSON Web Token (JWT), which is a compact, self-contained token used to share security information.
+
+
+..> tateless Authentication: The server doesn’t need to maintain session data for users.
+Compact and Secure: The JWT can be signed to prevent tampering.
+Cross-Origin Support: Useful in APIs and microservices for authentication.
+
+
+..> If you attempt to use the old token (which has expired) after the expiration time (e.g., after 1 hour for the original token), you'll get a 401 Unauthorized error or a 403 Forbidden error when trying to make requests.
+
+
+..> If the previous token has expired (after the original 1 hour), you will not be able to use it to add tasks, and you will need to log in again to get a new token, especially with the new expiration time of 3m.
+
+
+..> Note that the id should be a valid MongoDB ObjectId, which is a 24-character hexadecimal string. If you're passing the id as ":676196eb01598c53e1ccc8cb", it seems like there might be an extra colon (:) in the request. The id should be directly passed without the colon.
+ 
+
+..> http://localhost:7788/api/todos/676196eb01598c53e1ccc8cb
+
+
+
+
+Postman Documentation
+markdown
+Copy code
+# Postman Documentation for To-Do List RESTful API
+
+This document provides detailed instructions on how to test the To-Do List Application’s RESTful API using Postman. Each endpoint includes the required HTTP method, URL, headers, body, and expected responses.
+
+## Base URL
+http://localhost:3000/api
+
+markdown
+Copy code
+
+## Authentication Endpoints
+
+### 1. **Register User**
+- **URL:** `/auth/register`
+- **Method:** `POST`
+- **Headers:**
+  - Content-Type: `application/json`
+- **Body (JSON):**
+  ```json
+  {
+    "username": "testuser",
+    "password": "password123"
+  }
+Response:
+json
+Copy code
+{
+  "message": "User registered successfully"
+}
+2. Login User
+URL: /auth/login
+Method: POST
+Headers:
+Content-Type: application/json
+Body (JSON):
+json
+Copy code
+{
+  "username": "testuser",
+  "password": "password123"
+}
+Response:
+json
+Copy code
+{
+  "token": "<JWT_TOKEN>"
+}
+To-Do Endpoints
+Note:
+For all To-Do endpoints, include the following header:
+
+Authorization: Bearer <JWT_TOKEN>
+3. Create To-Do
+URL: /todos
+Method: POST
+Headers:
+Content-Type: application/json
+Authorization: Bearer <JWT_TOKEN>
+Body (JSON):
+json
+Copy code
+{
+  "title": "Buy groceries",
+  "description": "Buy milk, bread, and eggs",
+  "state": "incomplete"
+}
+Response:
+json
+Copy code
+{
+  "_id": "<TODO_ID>",
+  "title": "Buy groceries",
+  "description": "Buy milk, bread, and eggs",
+  "state": "incomplete",
+  "userId": "<USER_ID>"
+}
+4. Get All To-Dos
+URL: /todos
+Method: GET
+Headers:
+Authorization: Bearer <JWT_TOKEN>
+Response:
+json
+Copy code
+[
+  {
+    "_id": "<TODO_ID>",
+    "title": "Buy groceries",
+    "description": "Buy milk, bread, and eggs",
+    "state": "incomplete",
+    "userId": "<USER_ID>"
+  }
+]
+5. Get To-Do by ID
+URL: /todos/:id
+Method: GET
+Headers:
+Authorization: Bearer <JWT_TOKEN>
+Response:
+json
+Copy code
+{
+  "_id": "<TODO_ID>",
+  "title": "Buy groceries",
+  "description": "Buy milk, bread, and eggs",
+  "state": "incomplete",
+  "userId": "<USER_ID>"
+}
+6. Update To-Do
+URL: /todos/:id
+Method: PUT
+Headers:
+Content-Type: application/json
+Authorization: Bearer <JWT_TOKEN>
+Body (JSON):
+json
+Copy code
+{
+  "title": "Buy groceries and snacks",
+  "state": "completed"
+}
+Response:
+json
+Copy code
+{
+  "_id": "<TODO_ID>",
+  "title": "Buy groceries and snacks",
+  "description": "Buy milk, bread, and eggs",
+  "state": "completed",
+  "userId": "<USER_ID>"
+}
+7. Delete To-Do
+URL: /todos/:id
+Method: DELETE
+Headers:
+Authorization: Bearer <JWT_TOKEN>
+Response:
+json
+Copy code
+{
+  "message": "To-do deleted successfully"
+}
