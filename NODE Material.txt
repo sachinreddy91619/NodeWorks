@@ -1,0 +1,2821 @@
+..> node js is a software which is used to run the js code outside the browser.
+
+..> node provides runtime environment for javascript.
+
+..> to check wheather we have installed node in our system or not we need to use the  {node -v}
+
+if we installed it and if we want to use it then we need to use (node)
+
+..> to come out of loop{ ctrl+c(2times) or .exit
+
+....> to run the js code go to the folder directory and { node filename.js}
+
+
+NODE FOLDER:
+
+tes1.js:
+
+
+function test(){
+    console.log("testing")
+}
+
+
+function sum(a,b){
+    console.log(a+b)
+}
+
+
+
+function sub(a,b){
+    console.log(a-b)
+}
+
+let name="abc"
+
+
+module.exports={     ^^^^^^^^^
+    test,sum,name
+}
+
+
+
+test2.js:
+
+
+const im=require('./test1')  ^^^^^^^^^^
+
+console.log(im)
+
+im.test()
+
+im.sum(20,9)
+
+
+/////////////////////////////////
+
+file reading the javascript:
+
+reading the data from the file :
++++++++++++++++++++++++++++++++++++++
+
+index.js:
+
+let d=require('fs')
+
+let data=d.readFileSync('./topics.txt')
+
+console.log(data.toString())
+console.log("before reading")
+
+topics.txt: 
+
+this is the good job for the sachin reddy in the college.
+
+writing data to  the file :
+++++++++++++++++++++++++++++++++
+
+let d=require('fs')
+
+let data =d.writeFileSync('./topics.txt',"updating through program")
+
+console.log(data)
+
+
+Appending data to  the file :
+++++++++++++++++++++++++++++++++
+
+
+let d=require('fs')
+
+let data =d.appendFileSync('./topics.txt',"html, scc, java program")
+
+console.log(data) 
+
+note: if file is present then it will add the data are if will create the file and add the data
+
+
+Deleting data to  the file :
+++++++++++++++++++++++++++++++++
+
+
+let d=require('fs')
+
+let data =d.unlinkSync('./topics22.txt')
+
+console.log(data)
+
+
+Renaming the File :
++++++++++++++++++++++++++
+
+let d=require('fs')
+
+d.renameSync('./topics.txt' ,'./newname.txt');
+
+console.log("file name successfully updated").
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+In order to download the express we {npm i express}
+after downloading we have the express folder--> in that we have express.js file .
+
+..> in order to use that file we require('express')
+
+const exp=require('express')
+
+..> in order to create the server all  the required methods we get by calling the 
+
+const app=exp()
+
+...> we required the ip address  or port number in order to create the server that  we will write in the 
+
+app.listen()
+
+..> This app.listen() will take a call back function, This function will run when server successfully created.
+
+app.listen(4500,()=>{
+console.log("server started")
+})
+
+
+..> we are telling that when ever we get / request then we need to response has the 
+
+app.get('/',(req,res)=>{
+    res.send("Hello vv nn  received get request")
+
+})
+
+...> get {http://localhost:4500/} click {send} then we get the response.
+
+          127.0.0.1:4500
+...> in the res.senFile( "we can send the files also" )
+
+
+
+....> in order send the html file in the get request we need to have the:
+
+app.get('/xyz', (req, res) => {
+    res.sendFile(__dirname+'/index.html')
+
+})
+
+
+
+....>NOTE:-->  Using __dirname in your code ensures that file paths are always correctly resolved to their absolute paths.
+..> it will give the root path
+
+QUERY- ParaMETERS:
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++v++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++
++++++++++++++++
++++++++++++++++
+++++++++++
+
+
+..> Key-value pairs sent after the ? in a URL to pass data to the server.
+
+
+
+...> http://localhost:4500/mobiles/?id:2 ( this means from the all mobiles i need only the mobile info which is having the id:2
+
+
+..> http://localhost:4500/mobiles?id=23&namexyz ( we can write any query strings with using the & symbol.)
+
+....> If server get the request then according to that request if the request  has the query parameters then it will work according to it.
+
+.....> 
+
+Q1) 
+
+
+app.get('/',(req,res)=>{
+    
+    if(req.query.city){
+        res.send(`Hello to sachin AND WELCOME ${req.query.city}`)
+    }
+
+    else{
+        res.send("hello bye!!")
+    }
+})
+
+http://127.0.0.1:4500/?city=sangareddy
+
+
+o/p: Hello to sachin AND WELCOME sangareddy
+
+
+PATH PARAMETERS:
++++++++++++++++++++++++++++++++++++
++++++++++++++++
++++++++++++++++
++++++++++++++++
+++++++++++
+
+
+Instead of giving the query parameter  we can  directly give the required we use the {path parameters}
+
+
+app.get('/:',(req,res)=>{
+
+    if(req.params){
+        res.send(`Hello welcome to ${req.params}`)
+    }
+    else{
+        res.send("By1111")
+    }
+
+})
+
+.>>In Node.js, require() is a built-in function used to import modules, JSON files, or other resources into your code.
+
+
++++++++++++++++++++++++++++++++++++
++++++++++++++++
++++++++++++++++
++++++++++++++++
+++++++++++
+
+i have this code in the vs 
+
+app.post('/b',(req,res)=>{
+
+    res.send("this is post method in the DELL ")
+    console.log("we have done the successful post method")
+
+})
+
+After running the code and making the {post} request in the postman
+i can see the responce in the postman only 
+
+..> if copy the  127.0.0.1:4500/b and paste in the Browser iam not getting the responce because 
+
+
+note: When you use a browser, it only supports making GET requests directly through the address bar.
+
+note: Browsers do not natively support making POST requests directly from the URL bar;
+
+note: They require a form submission or JavaScript code (like fetch or XMLHttpRequest) to make a POST request.
+
+
+DATABASE CONNECTION IN THE MONGO-DB:
+++++++++++++++++++++++++++++++++++++++++++
+
+NOTE: MongoDB will accept a new database name that does not currently exist, and it will create the new database automatically when you first insert data into it
+
+
+use of the app.use(express.json()) :
++++++++++++++++++++++++++++++++++++++++
+
+..> this is a middle-ware ANd this is used to parse incoming request bodies that are in JSON format. 
+
+..> This middleware is necessary for handling requests where the client sends data in JSON format.
+
+
+..>This middleware will process data or reads the data  and interpreting the incoming request body data, which is in JSON format, and then converting this data into a JavaScript object that your application can easily work with.
+
+ex:
+
+ `{"name":"John", "age":30}` is converted into a JavaScript object `{name: "John", age: 30}`.
+
+
+....> in order to handle the static files in express we use the 
+app.use(express.static())
+
+
+++++++++++++++++++++++++++++++++++:
+
+CORS Cross-Origin-Resource Sharing
+
+
+..> CORS allows a web page to request resources (like CSS files or API data) from a different domain. For ex: if your web page is hosted on domain-A.com
+, it can request resources from domain-B.com .
+
+
+
+..> we have the application in {A} server and we sending the request for this application from another server {B}  so we get the CORS error.
+
+..> It is a security feature implemented by web browsers to restrict web pages from making requests to another server/domain/ which is not the  your original web page. 
+
+
+....> To allow your Express.js server to handle requests from different origins (domains), you need to enable CORS explicitly. Express provides a middleware called cors to handle CORS requests and configure which origins are allowed.
+
+..> npm install cors.
+
+..> 
+// Enable all CORS requests
+app.use(cors());
+
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++:
+
+netstat -an | find "LISTENING"{this command shows that all running the port numbers and Tcp Protocols}
+
+
+note in order to kill the process which is running  on a port number:
+
+netstat -ano | findstr :4500  # Find the PID using port 4500
+taskkill /PID <PID> /F        # Terminate the process with the found PID
+
+
+
+we have a ES7+ React/Redux/React-Native snippets extension :
+rfce+{enter}
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++:+++++++++++++++++++++++++++++++++++++++++++:
+
+To Unistall the PACKAGES:
+++++++++++++++++++++++++++++++
+
+npm uninstall express nodemon mongoose
+
+
+
++++++++++++++++++++++++++++++++++:
+MULTER CONCEPT:
+
+
+npm i multer
+
+const multer =require('multer')
+
+// we are getting all multer files in to the multer.
+
+multer() 
+
+// we need to call the multer obj
+
+
+dest: sepecifies the destination directory where uploaded files should be stored
+
+ex: multer({dest:'uploads/'})
+
+ex:
+
+
+in multer diskStorage is an obj
+
+..> in the disk storage we pass two things, destination: and filename: function
+
+storage: It is an instance of multer.StorageEngine
+
+
+
+multer({storage:storage}).
+
+
+fileFilter : it is an KEY: allows you to specify a function to filter which files are accepte fro upload based on their properties.
+
+
+limits: THIS is an KEY, To set limits on the size and number of files that can be uploaded.
+
+
+( we can set a limit here minimum and maximum) 
+
+
+apppost('/upload',multer.single('file')
+
+....>  if we want to  storage single  file by using the multer we have the single() function.
+
+
+
+.....>  generally when we are passing the file from FRONT-END  we pass the file with the Key-name [ That key name need to be given in the single() ].
+ 
+
+SECTION 14: MULTER FILE UPLOADS :
+=====================================>
+
+FRONT:END
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous" />
+
+
+</head>
+
+<body>
+
+    <h2>File uploaded to backend</h2>
+
+    <div>
+        <input type="file" id="avatar">
+        <button onclick="uploadFile()">UPLOADED</button>
+    </div>
+
+    <script>
+
+        const avatar = document.getElementById("avatar");
+
+        function uploadFile() {
+
+            const file = avatar.files[0];
+
+            if (file) {
+
+                const formData = new FormData();
+
+
+                //  A JavaScript object used to construct key-value pairs representing form data.
+
+                formData.append("file", file);
+
+                // Adds data to the FormData object.
+
+                // "file": The key name for the file in the request.
+
+                // file: The selected file object.
+
+                fetch(
+                    "http://localhost:6678/upload", {
+
+                    method: "POST",
+                    body: formData,
+                }
+                ).then((res) => {
+                    console.log(res);
+                }).catch((err) => {
+                    console.log(err)
+                });
+
+            }
+
+        }
+
+    </script>
+</body>
+
+</html>
+
+
+BACKEND:
+===============================================================>
+
+
+const express = require('express');
+const multer = require('multer');
+const cors = require('cors');
+const app = express();
+app.use(cors())
+
+const ds = multer.diskStorage({
+    destination: (req, file, cb) => {
+
+        cb(null, "uploads/")
+
+    },
+    filename: (req, file, cb) => {
+
+        cb(null, Date.now() + file.originalname)
+
+    }
+});
+
+
+
+
+
+
+//multer.diskStorage({..}) 
+/* 
+
+.> A method from the multer library to define how and where files should be stored on the server.
+
+..>  It allows you to customize the destination folder and filename for uploaded files.
+
+.> destination: A key in the diskStorage configuration to specify where the file should be saved.
+
+..> req: Represents the incoming request from the client.
+
+..> file: Represents the uploaded file object.
+
+..> cb: A callback function to pass the final destination path.
+
+
+.> filename: A key in the diskStorage configuration to specify how the uploaded file should be named.
+
+..> cb: The callback function to set the final filename.
+
+.> Date.now(): A timestamp to ensure unique filenames.
+
+*/
+
+
+const upload111 = multer({
+    storage: ds,
+    limits: {
+        fileSize: 1024 * 1024 * 5 // Limit file size to 5MB
+    }
+});
+
+
+
+
+
+/*
+..> multer({...}): Initializes multer with the specified options.
+
+..> Specifies the storage configuration (ds)
+
+
+*/
+
+
+app.post('/upload', upload111.single('file'), (req, res, next) => {
+    res.send("uploaded succesfully")
+}
+)
+
+
+
+
+/* 
+
+
+..> Middleware from multer to handle a single file upload.
+
+..> The argument 'file' matches the key of the file in the client's request (e.g., <input type="file" name="file">).
+
+
+..> 
+
+
+*/
+
+
+
+app.listen(6678, () => {
+    console.log("server is running at the port number 6678")
+})
+
+
+// npm install multer
+
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++ ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+..>SENDING EMAILS IN THE NODE-JS
++++++++++++++++++++++++++++++++++++++>
+
+..> SendGrid is one of many services that allow you to send emails from your application code.
+
+..>  
+send can be called to send an email from your application. The configuration object can be 
+used to provide:
+ 
+• to - Who is the email to? 
+• from - Who is the email from? 
+• subject - What’s the subject line of the email? 
+• text - What’s the body of the email. 
+
+
+in order to work with the nodeEmailer , install nodeemailer.
+
+npm install nodemailer 
+
+
+123@ks#business
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+HOW TO Register And login with EMAIL IN MERN Stack Using JWT:
+
+ObjectID: for every using registering in thebackend we have the Unique ID
+  
+
+JWT: Json WEb Token: (MiddleWare) this is a kind of a middle ware.
+
+..> Token is an unique and it an encoded value of our ID with time expires.
+ 
+..> we generate the Tokens with the key's:
+
+..> if we access the protected routes without token then we get the BAD request.
+
+..> we need to decode token with the key which we use to encode it.
+
+Server-side: npm install express mongoose cors jsonwebtoken
+
+npm i -D nodemon concurrently
+..> this concurrently will make to run our FT-END servers and BEND- servers.
+
+Client-Side: npm i axios react-router-dom redux react-redux redux-devtools-extension
+
+...> We seed all the tokens in the headers only .
+
+..> when ever we are accessing the backend from front-end for not getting the policy errors we use the CORS
+
+...> 
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+...> async and await are used to handle asynchronous operations more efficiently and readably than using traditional fetch with .then() and .catch() promises.
+
+......> await will pause the execution of the function , until the promise will returned by values.
+
+....> Synchronous functions are executed in a sequence, one after another. Each function waits for the previous one to finish before starting.
+
+...> Asynchronous functions allow the program to continue executing.
+
+..> The APIs in Node.js are asynchronous which means that they do not cause blockers.
+
+..> REPL stands for Read Eval Print Loop. REPL performs tasks related to reading, executing, printing, and looping. 
+
+..>  node.js is used for the building the server-side applications.
+
+..> Asynchronous non-blocking and synchronous blocking are the two different types of API functions that Node.js supports.
+
+..> Npm stands for the Node package manager. It is used for installing, updating, and uninstalling packages in your application. It helps to manage dependencies in Node.js applications.
+
+..> Unit testing in Node.js is a process of testing individual units of code.
+
+..> draw-act: Node.js responses can be greatly blocked if an intensive CPU computation is used.
+
+..> does not support multiple threads, it is better suited for lightweight applications but not large-scale or heavy applications.
+
+
+..> Some examples of async functions are setTimeout(), setInterval(),
+
+..> Present in the root directory of a Node application/module, package.json defines the properties of a package including dependencies, metadata, and configuration options.
+
+..> Node.js is single-threaded.
+
+..> A control function manages and manipulates the flow of asynchronous code execution.
+
+Node.js is designed to handle asynchronous I/O operations, which means that multiple I/O operations can be executed simultaneously without blocking the execution of other code.
+
+..> The call-back function is used to execute a function after a certain event has occurred.
+
+.> . The purpose of using a callback function is to handle asynchronous operations.
+
+..> 
+Routing is a process where you associate HTTP request to a URL path or specific routes.
+
+EXPRESS-JS:
++++++++++++++++++++
+..> The express framework is a web application framework that helps you easily create server-side applications.
+
+
+.....> MongoDB waits until you have created a collection (table), with at least one document (record) before it actually creates the database (and collection).
+
+
+...>Express.js is a small framework that works on top of Node.js web server functionality to simplify its APIs. 
+
+...> Express.js is a lightweight Node.js framework that gives us ability to create server-side web applications faster and smarter. 
+
+....>Node.js is the runtime environment that allows you to execute JavaScript on the server side, on the other hand Express.js is a framework built on top of Node.js 
+
+...> USE OF THE EXPRESSES: 
+
+.>: Express mainly used for handling HTTP methods like GET, POST, PUT, and DELETE. This makes it easy to define how the application should respond to different types of HTTP requests.
+
+.>: Routing: Express provides a simple way to define routes for handling HTTP requests. 
+
+.>: Json Web Tokens are mainly a token which is used for authentication and information exchange. 
+.>: 
+
+
+// simple user Validation middleware
+
+const ValidateUser=(req,res,next)=>{
+const user=req.user;
+}
+
+// check if the user object is present:
+
+if(!user){
+return res.status(401).json({error: 'Unauthorized - User not found'})
+}
+
+// If the user is valid, move to the next middleware or route handler
+
+next();
+
+};
+
+
+// Example of using the middleware in an express route
+
+app.get('/profile', validateUser,(req,res)=>{
+const user=req.user;
+
+res.json({message:'profile page loaded});
+
+});
+
+....> res.send() and res.json() used for  similar purposes with some difference.
+
+
+res.json() when you are specifically working with JSON data.
+
+  
+....> npm install -g express-generator for getting the auto structure in the code:
+
+
+...> CORS (Cross-Origin Resource Sharing) : this is one type of the middle ware which we can use to control the web pages in one domain can request and interact with resources hosted on another domain.
+
+
+
+..> Middleware functions are those functions that have the access to request and response object and the next middleware or function. They can add functionality to an application.
+
+
+...> Middleware appears in the middle between an initial request and final intended route. 
+
+..> express.json: This is used for parsing incoming requests with JSON payloads.
+
+
+..> In Express JS route handler function, we have 3 arguments:
+
+REQ:
++++++++
+.> req: This represents the HTTP request object which holds information about the incoming request. It allows you to access and manipulate the request data.
+
+RES:
++++++++ 
+res: req: This represents the HTTP request object which holds information about the incoming request. It allows you to access and manipulate the request data.
+
+
+..> app.use() is a more general-purpose method for applying middleware globally or to specific routes.
+
+.> app.use() is used to add middleware functions in an Express application. 
+
+..> Each route can have one or more handler functions, which are executed when the route is matched.
+
+app.METHOD( PATH, HANDLER ):
+++++++++++++++++++++++++++++++++:
+
+app is an instance of the express
+
+METHOD is an HTTP request method, in lowercase
+
+PATH is an path on the server
+
+HANDLER is a function executed when the route is matched.
+
++++++++++++++++++++++++++++++++++++++++++
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
++++++++++++++++++++++++++++++++++++++++++
+
+app.post('/', (req, res) => {
+  res.send('Got a POST request')
+})
+
++++++++++++++++++++++++++++++++++++++++++
+
+app.put('/user', (req, res) => {
+  res.send('Got a PUT request at /user')
+})
+
++++++++++++++++++++++++++++++++++++++++++
+
+app.delete('/user', (req, res) => {
+  res.send('Got a DELETE request at /user')
+})
+
+
+ WORKING WITH THE ERROR HANDLING in the Express:
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Routing: Routing refers to how an application’s endpoints (URIs) respond to client requests.4
+
+
+Route Paths: Route paths can be strings, string patterns, or regular expressions.
+
+
+req.params object is used to capture the values
+
+Route path: /users/:userId/books/:bookId
+Request URL: http://localhost:3000/users/34/books/8989
+req.params: { "userId": "34", "bookId": "8989" }
+
+We can provide the multiple call back functions that behave like middleware to handle a request.
+
+ex:
+
+app.get('/example/b', (req, res, next) => {
+  console.log('the response will be sent by the next function ...')
+  next()
+}, (req, res) => {
+  res.send('Hello from B!')
+})
+
+
+WRITING MIDDLEWARE FOR USE IN EXPRESS APPS:
++++++++++++++++++++++++++++++++++++++++++++++++
+..> Middleware functions are functions that have access to the request object (req), the response object (res), and the next function in the application’s request-response cycle.
+
+...> Middleware functions can perform the following tasks:
+
+1) Execute any code.
+2) Make changes to the request and the response objects.
+3) End the request-response cycle.
+4) Call the next middleware in the stack.
+
+The NEXT () : it is used for :
+
+
+..>The next() function is not a part of the Node.js or Express API, but is the third argument that is passed to the middleware function. The next() function could be named anything, but by convention it is always named “next”. 
+
+
+
+If the current middleware function does not end the request-response cycle, it must call next() to pass control to the next middleware function. 
+
+.> To load the ddle ware functions we need to call app.use(), specifying the middleware function. 
+
+..> Express.js is a web framework for Node.js. It is a fast, robust and asynchronous in nature.
+
+..> Express.js Request and Response objects are the parameters of the callback function which is used in Express applications.
+
+...> The Response object (res) specifies the HTTP response which is sent by an Express app when it gets an HTTP request.
+
+...> 
+
+Express.js Cookies Management :
+++++++++++++++++++++++++++++++++++++
+
+
+..> Cookies are small piece of information i.e. sent from a website and stored in user's web browser when user browses that website.
+
+...> Every time the user loads that website back, the browser sends that stored data back to website or server, to recognize user.
+
+..> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.> HTTP is stateless.
+
+.> cookies are simple, small files/data sent to the client with a server request and stored on the client-side.
+
+.> The backlog is the maximum number of queued pending connections. The default is 511.
+
+..> The method of using values is called interpolation.
+
+
+
+..> The cookie-parser is a middleware that parses cookies attached to the client request object.
+
+         REACT INTERVIEW QUESTIONS:
++++++++++++++++++++++++++++++++++++++
+
+.> A key is a special attribute you should include when mapping over arrays to render data. 
+
+.> Key prop helps React identify which items have changed, are added, or are removed.
+
+
+.> The Shadow DOM is a browser technology designed primarily for scoping variables and CSS in web components. 
+
+React Fiber:
+
+..> It is the new reconciliation engine or reimplementation of core algorithm in React.
+
+..> A component that controls the input elements within the forms on subsequent user input is called Controlled Component,
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+.> Node.js is a library for running JavaScript applications which is used to create server-side applications.
+
+.> Node.js is mostly used to run real-time server applications.
+
+Features of Node.js :
+
+
+Extremely fast:
++++++++++++++++++++++
+Node.js is built on Google Chrome's V8 JavaScript Engine, so its library is very fast in code execution.
+
+
+Event Driven:
+++++++++++++++++++
+All APIs of Node.js library are asynchronous i.e. non-blocking.
+
+Single threaded:
+++++++++++++++++
+Node.js follows a single threaded model with event looping.
+
+
+
+..> There can be console-based and web-based node.js applications.
+
+Node.js web-based Example:
++++++++++++++++++++++++++++=
+A node.js web application contains the following three parts:
+
+1) Import required modules: The "require" directive is used to load a Node.js module.
+
+2) Create server: You have to establish a server which will listen to client's request.
+
+3) Read requests and return responses: Server created in the second step will read HTTP request made by client which can be a browser or console and return the response.
+
+
+
+Node.js Console
++++++++++++++++++
+
+.> Node.js console module provides a simple debugging console .
+
+
+..> The console.log() function is used to display simple message on console.
+
+..> The console.error() function is used to render error message on console.
+
+..> The console.warn() function is used to display warning message on console.
+
+
+
+
+
+
+Node.js REPL
+++++++++++++++
+
+Read Eval Print and Loop.
+
+..>  It specifies a computer environment like a window console or a Unix/Linux shell where you can enter the commands and the system responds with an output in an interactive mode.
+
+..> REPL Application has bundled with the node and  
+
+..> Read: It reads user's input; parse the input into JavaScript data-structure and stores in memory.
+
+..> Eval: It takes and evaluates the data structure.
+
+..> Print: It prints the result.
+
+..> Loop: It loops the above command until user press ctrl-c twice.
+
+
+
+
+Node.js Package Manager
++++++++++++++++++++++++++++
+
+..> npm comes with the bundled with the
+NODE.Js Application.
+
+..> by using the npm we can install the modules.
+
+Node.js web framework called express:
+
+npm install express.
+
+npm uninstall express  
+
+npm search express  { used to search the module.}
+
+
+Node.js Global Objects
++++++++++++++++++++++++++
+
+
+Node.js global objects are global in nature and available in all modules.
+
+..> Node.js __dirname
+.> It is a string. It specifies the name of the directory that currently contains the code.
+
+
+pppp.js save{ console.log(__dirname); }
+node global-pppp.js
+
+	
+
+..> Node.js __filename
+.> t specifies the filename of the code being executed.
+
+pppp.js save{ console.log(__filename); }
+node global-pppp.js
+
+
+
+
+..> __dirname
+
+..> __filename
+
+..> process.platform
+
+..> global.name="hello sachin"
+
+console.log(global.name)
+
+..> require('fs')
+
+..>  module.exports;
+
+
+..> setTimeout( ()=>{
+console.log(" ")
+},2000)
+
+..> setInterval( ()=>{
+	console.log(" ")
+	},2000)
+
+
+
+Node.js OS
++++++++++++++++
+
+..> Node.js OS provides some basic operating-system related utility functions.
+
+pppp.js
+
+console.log(os.homedir());  
+
+
+node pppp.js
+
+
+
+Node.js Timer
+++++++++++++++++
+
+Node.js Timer functions are global functions.
+
+..> setImmediate(): It is used to execute set Immediate function.
+
+..> setInterval(): It is used to define a time interval.
+
+..> setTimeout(): ()- It is used to execute a one-time callback after delay milliseconds.
+
+
+pppp.js
+
+setInterval(function() {  
+ console.log("setInterval: Hey! 1 millisecond completed!..");   
+}, 1000);  
+
+ node pppp.js
+
+
+
+
+Node.js DNS
++++++++++++++++
+
+..> The Node.js DNS module contains methods to get information of given hostname.
+
+"""
+const dns = require('dns');  
+dns.lookup('www.javatpoint.com', (err, addresses, family) => {  
+  console.log('addresses:', addresses);  
+  console.log('family:',family);  
+});  
+
+
+
+"""
+
+
+Node.js provides the ability to perform socket programming. We can create chat application or communicate client and server applications using socket programming in Node.js. The Node.js net module contains functions for creating both servers and clients.
+
+
+Node.js Process
++++++++++++++++++++
+
+.> 
+
+Node.js provides the facility to get process information such as process id, architecture, platform, version, release, uptime, upu usage etc.
+
+
+
+
+console.log( process.pid , process.version ,)
+
+..> Node.js provides Buffer class to store raw data similar to an array of integers but corresponds to a raw memory allocation outside the V8 heap.
+
+
+
+Node.js Streams
+++++++++++++++++++
+..> 
+
+Node.js Events
+++++++++++++++++++
+
+..> Node.js applications are single threaded and every API of Node js are asynchronous.
+
+..> 
+Node.js uses event driven programming.
+
+
+..> It means as soon as Node starts its server, it simply initiates its variables, declares functions and then simply waits for event to occur.
+
+..> so this is why node.js is faster $ used 
+
+
+..> callback functions are called when an asynchronous function returns its result
+
+..>
+
+
+
+What is Web Server
++++++++++++++++++++++
+
+..> Web Server is a software program that handles HTTTP requests sent by HTTP clients like web browsers, and returns web pages in response to the clients.
+
+..> Web servers usually respond with html documents along with images, style sheets and scripts.'
+
+..>Web Application Architecture:
+
+
+..> NodeJS is built on an event-driven architecture, which is fundamental to its asynchronous.
+
+Events: In NodeJS, an event is an action or occurrence that can be observed and handled by the application.
+
+Event emitters are objects that can emit events.
+
+The event loop is a single-threaded mechanism that continuously checks for pending .
+ 
+
+
+server side scripting
+++++++++++++++++++++++++
+
+
+..> refers to a web server technology in which a user's request is processed by a server-side script before the server sends a response back to the user's web browser.
+
+..> The script runs on the server and generates dynamic content that is then sent to the client.
+
+
+
+
+working of Node.js :
++++++++++++++++++++++++
+
+..> the clients send requests to the webserver to interact with the web application.These requests can be non-blocking .
+
+..> Node.js receives the incoming requests and adds those to the Event Queue.
+
+..> Next, the requests are passed one by one through the Event Loop.
+
+
+..> event loop then processes the simple requests.
+
+..> A single thread from the Thread Pool is assigned to a single request.
+
+..> Once the task is completed, the response is sent to the Event Loop that sends that response back to the client.
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+..> fork is used to spawn child processes,in nodejs it is used to create a new instance of the V8 engine to run multiple workers to execute the code.
+
+..> 
+
+NODE-JS FULL COURSE :
+
+NODE MODULE SYSTEM : NODE js module systems allow you  to organize your code into multiple reusable pieces of the  modules or code as simple as.
+
+..> first you create the multiple modules and then each in node js will treate has a separate file.
+
+module.exports --> its just like exporting the files to other  files
+
+..> require :it justs like the importing. it is just like import functionality form other modules.
+
+..>
+ how the module wrapper works:
+in nodejs every  module whatever module that we are creating is wrapped in a function before it executed 
+..> and this wrapper function is called has the module wrapper function.
+
+
+// module wrapper
+( 
+
+function(exports,require,module,__filename,__dirname){
+		//your module code goes here
+}
+)
+
+...> ( npm init ) to intial new node-js projectwe use it. with the user entering the information
+
+..> ( npm init -y ) to automatically new node js project project .
+
+..> Lodash it is a popular JAVASCRIPT LIBRARY  is mainly used for Manipulating arrays and objets :helps with sorting, filtering, maping, finding, unique values, merging,
+
+..> data transformation: converting data into the desired format, making it easier to work with  arryas, and objects.
+
+..> 
+
+...> PATH MODULES:
+================================ >> 
+
+The path module in node.js provides utilities for working with file and directory paths. It helps you easily build, read, and manipulate file paths in a  way that works on all operating systems.
+
+
+..> Joining paths : combining different parts of a path into one.
+
+joining folder nmaes and filenames to create a full path.
+
+resolving paths : finds the absolute path to a file.
+
+extracting parts of a path : it will get the directory names, file names, or file extension separately.
+
+console.log("sachin")
+
+const path=require('path');
+
+// to get the directory path names: 
+
+console.log('Director name:',path.dirname(__filename));
+
+// to get the file name
+
+console.log('file name:',path.basename(__filename))
+
+// to get the file extension
+
+console.log('file extension:',path.extname(__filename));
+
+// joining of the paths :
+
+const joinpath=path.join("/user","documents","node","projets")
+console.log("joined paths are:",joinpath)
+
+// inorder to resolve the path we use : to get the absolute path ps the file 
+
+const resolvepath=path.resolve("user","docuents","node","projects")
+
+console.log("resolve path:",resolvepath)
+
+// to normalize the path we do :
+
+const normalizepath=path.normalize('/user/.documents/../node/projets')
+
+console.log("nornamizepath here",normalizepath)
+ 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+FILE SYSTEM IN THE NODE JS:
+
+
+
+
+console.log("sachin ... here")
+
+const fs=require('fs')
+
+const path=require("path");
+
+const dataFolder=path.join(__dirname,'data');
+// here the if statement checks wheather we have the datafolder is present or not if it is present then pk but if itis not present then the mkdirSync will create the datat  folder.
+
+if(!fs.existsSync(dataFolder)){
+    fs.mkdirSync(dataFolder);
+    console.log("data folder created")
+}
+
+const filepath=path.join(dataFolder,"example.txt")
+//sync way of creating the file
+
+// writing the data to the file
+
+fs.writeFileSync(filepath,"hello iam sachin candy....!")
+console.log("file created successfully");
+
+// reading the data from the file 
+const readContentFromFile=fs.readFileSync(filepath,"utf8")
+
+console.log("filecontent:",readContentFromFile)
+
+fs.appendFileSync(filepath,'\n THIS is a new line added to that file ')
+console.log("new file content addded ")
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+setting up  server in the NODE-JS : DEMO
+
+const http=require('http')
+
+const server=http.createServer( (req,res)=>{
+
+    // this req object will give the req url:
+
+    const url=req.url;
+
+    if (url==="/"){
+        res.writeHead(200,{"content-Type":"text/plain"});
+        res.end("home page...candy!");
+        
+    }
+    else if(url==="/projects"){
+        res.writeHead(200,{"Content-Type": "text/plain"});
+        res.end("projects")
+    }
+    else{
+        res.writeHead(404,{"content-type":"text/plain"});
+        res.end("This page can not be found...!")
+    }
+});
+
+const port =6677
+
+server.listen(port, ()=>{
+    console.log(`server is know listening to port ${port}`)
+
+})
+
+//  res.writeHead(200, {"Content-Type": "text/plain"}); 
+
+/*
+1) sets the status code :200 means "OK", indicating that the request was successfully
+
+2) sets the responce header:  {"Content-Type": "text/plain"} tells the browser the type of content its about to receive - in this case plain text.
+
+*/
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$v$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$v$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+
+node.js is an open source server environment.
+
+..>
+
+Node.js handles a file request:
+
+.> sends the task to the computer's file system
+.> ready to handle the next request.
+.> When the file system has opened and read the file, the server returns the content to the client.
+
+
+Creating of the HTTP SERVER :
+-------------================== >
+
+const http =require('http')
+
+const server=http.createServer(function (req,res){
+	console.log(req,"req")
+
+    res.writeHead(200,{'content-Type':'text/html'}); 
+    res.end("hello node js from http module")
+
+
+
+
+});
+
+server.listen(6565,()=>{
+	console.log("server is now listening to port ${port}");
+})
+
+
+Creating of the HTTP SERVER and routing in the NODEJS:
+-------------================== >
+
+const http=require('http')
+
+const server =http.createServer( (req,res)=>{
+
+	const url=req.url;
+
+	if(url==="/"){
+		res.writeHead(200,{'content-Type':"text/plain"});
+		res.end("home page ...candy!");
+	}
+
+	else if(url==="/projects"){
+ 		res.writeHead(200,{"content-Type":"text/plain" });
+		res.end("projects")
+
+	}
+
+	else{
+		res.writeHead(404,{"content-Type":"text/plain" });
+		res.end("This is page can not be found...!;)
+	
+	}
+	
+	});
+
+	
+	server.listen(6565,()=>{
+		console.log("server is know listening to port number 6565)
+
+})
+
+
+
+
+..> modules to be the same as JavaScript libraries.
+
+
+Built-in HTTP Module:
+
+.> Node.js has a built-in module called HTTP, which allows Node.js to transfer data over the Hyper Text Transfer Protocol (HTTP).
+
+.> The HTTP module can create an HTTP server that listens to server ports and gives a response back to the client.
+
+.> 
+
+
+
+
+NPM  NODE PACKAGE MANAGER :
+===================================>
+
+.> NPM is a package manager for Node.js packages, or modules
+
+.> A package in Node.js contains all the files you need for a module.
+
+.> Modules are JavaScript libraries which we can include in your project.
+
+
+
+..> EVENTS IN NODE.JS:
+================================>
+.> Every action on a computer is an event.
+
+
+..> An event is a notification that triggers a specific piece of code (a callback function) when something happens, like receiving a request, reading a file, or a timer completing.
+
+.> 
+
+
+..> Node.js Console MODULE:
+==================================>
+
+.> The Node.js console module provides a simple debugging console similar to JavaScript console mechanism provided by web browsers.
+
+.> There are three console methods that are used to write any node.js stream:
+
+console.log()
+console.error()
+console.warn()
+
+
+..> . npm is a package manager that allows you to 
+install and use third-party npm libraries in your code. 
+
+..> Your Node.js application needs to initialize npm before npm can be used. You can run npm init from the root of your project to get that done. 
+
+..> That command will ask you a series of 
+questions about the project and it’ll use the information to generate a package.json file i
+
+..> 
+
+
+
+
+
+
+
+difference between the package json and package-lock-json
+================================================================>
+
+.> package.json: Describes the metadata of the project and
+it contains the  lists dependencies with their version ranges.
+..>
+
+..> it is created manually (or using npm init ).
+
+..> developer can update manually and do modifications.
+
+
+package-lock.json : Describes the exact versions of dependencies and sub-dependencies
+
+..> Automatically generated by npm when dependencies are installed or updated.
+
+..> Automatically updated by npm when dependencies are added, updated, or removed.
+
+...> 
+
+Debugging of Node.js
+==========================>
+
+..> Printing values to the console with console.log is a good start, 
+
+..> node inspect app.js 
+
+
+Section 6: Asynchronous Node.js 
+====================================>
+
+
+..>This asynchronous and non-blocking nature makes Node.js ideal for backend 
+development. 
+
+const request = require('request') 
+
+..> This line is used in JavaScript (specifically in Node.js) to include a library or package called request. 
+
+..> This library helps make HTTP requests (like GET, POST, etc.) to websites or APIs.
+
+..> 
+
+const request = require('request');
+
+request('https://api.example.com/data', (error, response, body) => {
+  if (!error && response.statusCode === 200) {
+    console.log(body); // Prints the data fetched from the API
+  } else {
+    console.log('Error:', error);
+  }
+});
+
+
+
+
+..> The http module can be 
+used to make http requests and the https module can be used to make https requests. 
+
+
+/*
+
+
+
+
+*/
+
+===============================================================>===============================================================>===============================================================>===============================================================>===============================================================>
+
+..> 
+
+TESTING NODEJS APPLICATION:
+===============================>
+
+..>  Jest testing framework,  Jest gives you everything you need 
+to create a test suite for your Node.js applications.
+
+
+instal : npm install jest;
+
+.> Next, create a test script in package.json. 
+The script itself is jest. This allows you to use npm test to run the Jest test suite.
+
+..> 
+
+test : it takes the two arguments:
+
+1) name of the test case
+2) The test function
+
+ex:
+test("hello world",()=>{
+
+})
+
+
+
+Jest provides lifecycle functions that you can use to configure your test suite. There are 
+four: 
+1. 
+beforeEach - Run some code before each test case 
+2. 
+afterEach - Run some code after each test case 
+3. before - Run some code once before the tests run 
+4. after - Run some code once after the tests run
+
+
+npm init -y;
+npm install jest;
+in package-json:
+======================>
+
+{
+  "scripts": {
+    "test": "jest"
+  }
+}
+
+math.js :
+===============>
+function add(a,b ){
+	return a+b;
+};
+function sub(a,b) {
+	return a-b;
+};
+
+module.exports={add,sub};
+
+
+math.test.js :
+===================>
+const {add,sub} =require('./math');
+
+test("adds 1+ 2to equals 3",()=>{
+
+	expect(add(1,2)).toBe(3);
+
+});
+
+test("substract 5 - 3 to equal 2",()=>{
+	expect(add(5,3)).toBe(2) ;
+
+});
+
+npm test
+
+
+ WebSocket protocol and Socket.io
+=======================================>
+
+..> The WebSocket protocol 
+supports real-time bi-direction communication, which makes it a great fit for the chat application.
+
+npm install socket
+
+
+..> Socket.io can be used on its own or with Express
+
+
+..> Socket.IO is one such JavaScript library that programmers use in developing real-time “Web Applications”.
+
+..> A browser is a perfect example of client application. Clients on browsers usually communicate to Servers via HTTP requests and responses. 
+
+..> 
+Socket.IO works on the same concept and enables bi-directional communication between web clients and servers. For handling them separately and efficiently, it consists of two parts;
+
+1) a JavaScript client library that runs on browsers.
+2) a Node.js server
+
+Server to install it in the Node.js Project
+===============================================>
+
+npm install --save socket.io
+
+ 
+JavaScript client to install it in the Node.js Project
+=========================================================>
+
+npm install --save socket.io-client
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+==============================================================>
+how does node.js handles child threads
+in simple way ?
+
+.> In Node.js, child threads are handled using Child Process and Worker Threads. 
+
+.> Node.js allows you to create child processes that run in separate OS processes. This is useful when you need to perform CPU-intensive tasks without blocking the main event loop.
+
+        n
+const { fork } = require('child_process');
+
+// Create a new child process
+const child = fork('child.js');
+
+// Send a message to the child process
+child.send('Hello from parent!');
+
+// Receive a message from the child process
+child.on('message', (message) => {
+  console.log(`Received from child: ${message}`);
+});
+
+
+
+
+How does Node.js handle the child threads? 
+
+Node.js handles child threads by creating separate instances of the Node.js runtime environment that can be used to execute code in parallel with the main process.
+
+
+
+==============================================================>
+descibe the event -driven programming in node.js
+
+.> Event-driven programming in Node.js is a programming where the flow of the program is determined by events and the responses to them (called event handlers or callbacks).
+
+Event Loop: Node.js operates on an event loop that continuously listens for events and executes the corresponding event handler (callback functions ) when an event occurs.
+3
+
+
+Event-Loop: Phases :
+
+..> The event loop is what allows Node.js to perform non-blocking I/O operations — despite the fact that a single JavaScript thread is used by default 
+
+
+..> When Node.js starts, it initializes the event loop, processes.
+
+..> The event loop in Node.js has six main phases that are repeated until the application has no more code to execute
+
+..> 
+
+why event loop exits explain in simple words
+================================================> 
+
+The event loop in JavaScript is a part of how asynchronous code is handled. It constantly checks if there are any tasks to be executed, such as events, callbacks, or promises.
+
+The event loop exits when there are no more tasks to handle, meaning that:
+
+There are no more items in the event queue (tasks waiting to be executed).
+There are no more microtasks (like promise resolutions) to process.
+There is no ongoing work in the call stack.
+In simple terms, the event loop keeps running as long as there are things to do. Once it has finished everything in the queue and there's nothing else to process, it stops and exits.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+...> The event loop manages the execution of multiple tasks in a specific order.
+
+..> 
+
+
+why do we need the EVENT LOOP :
+
+JavaScript is single-threaded, meaning it can execute one piece of code at a time. However, we often need to handle tasks that take time (e.g., fetching data from a server or waiting for a timer). The event loop ensures that these tasks are completed efficiently without blocking the execution of other code.
+
+Timers Phase:
+========================>
+
+..> Executes callbacks scheduled by setTimeout() and setInterval() 
+
+..> If you scheduled a function with setTimeout or setInterval, it will run during the Timers Phase, but only if the specified time has passed.
+
+
+setTimeout(() => {
+    console.log('Timer callback');
+}, 1000);
+
+Pending callbacks:
+==========================>
+..> Executes I/O callbacks that were deferred/delayed to the next loop iteration.
+
+..> Callbacks deferred by I/O operations, such as fs, net, and stream modules, are executed in this phase.
+
+..> fs.readFile is delayed because:
+
+It involves an asynchronous I/O operation that runs in the background (libuv thread pool).
+
+const fs=require('fs')
+fs.readFile('file.txt', () => console.log('File read callback'));
+console.log('This runs first!');
+
+o/p: This runs first!
+File read callback
+
+
+..> 
+..> fs.readFile('example.txt', (err, data) => {
+    console.log('This callback is deferred until the file is read.');
+});
+
+Idle, prepare phase:
+===============================>
+ ...> Internal phases used for setup and bookkeeping
+..> This is used internally by Node.js for system-level tasks. You typically won’t interact with it.
+
+Poll:
+===============================>
+
+..> Retrieves new I/O events and executes I/O-related callbacks
+
+..> Handles new I/O events, such as reading data from files or sockets.
+
+...> 
+
+Check Phase :
+===================================>
+
+...> Invokes callbacks registered with process.nextTick()
+
+..> Executes setImmediate callbacks.
+
+..> Functions scheduled with setImmediate() are run in the Check Phase.
+
+Close callbacks:
+=======================>
+..>  Handles cleanup tasks, such as closing database connections or terminating server
+
+
+
+example:
+
+
+.> Event Emitters: In Node.js, objects that can emit events are called Event Emitters.
+
+.. EventEmitter is a class that holds all the objects that can emit events.
+
+..> the http module in Node.js emits events like request, connection, or close.
+
+..> Listeners/Handlers: When an event is emitted, event listeners (or handlers) are registered to listen for that event and execute specific code in response. 
+
+..> A callback function ( called an event handler) is called when an event is triggered.
+
+..> 
+
+
+
+const EventEmitter = require('events');  // Import the EventEmitter class
+
+// Create an instance of EventEmitter
+const myEmitter = new EventEmitter();
+
+// Create an event listener for the 'event' event
+myEmitter.on('event', () => {
+  console.log('An event occurred!');
+});
+
+// Emit the 'event' event
+myEmitter.emit('event');
+
+
+==============================================================>==============================================================>
+how do you update the node.js to the latest version ?
+
+
+npm cache clean -f
+
+npm install -g n
+
+
+
+=======================================================================>
+
+..> JavaScript is a scripting language whereas Node.js is an engine that provides the runtime environment to run JavaScript code.
+
+..> 
+There are two types of API functions supported by Node.js:
+
+Synchronous: These API functions are used for blocking code.
+Asynchronous: These API functions are used for non-blocking code.
+
+
+
+..> 6. What is a module in Node.js?
+
+..> In Node.js Application, a Module can be considered as a block of code that provide a simple or complex functionality that can communicate with external application.
+
+..>  Modules are useful because of their reusability and ability to reduce the complexity of code into smaller pieces.
+
+..> Middleware is the function that works between the request and the response cycle. Middleware gets executed after the server receives the request and before the controller sends the response.
+
+..> 
+
+What is control flow in Node.js?
+
+.> Control flow in Node.js refers to the sequence in which statements and functions are executed.
+
+..> It manages the order of execution, handling asynchronous operations, callbacks, and error handling.
+
+..> 
+
+
+What is the order in which control flow statements get executed?
+=====================================================================>>>>
+
+.> executions and queue handling
+
+.> collections of data & storing it
+
+.> handling concurrency.
+
+.> executing the next lines of code.
+
+=====================================================================>>>>
+Here are some main disadvantages of Node.js listed below:
+
+Single-threaded nature: May not fully utilize multi-core CPUs, limiting performance.
+NoSQL preference: Relational databases like MySQL aren’t commonly used.
+Rapid API changes: Frequent updates can introduce instability and compatibility issues.
+
+=====================================================================>>>>
+Node.js is a JavaScript runtime environment that runs on the server side whereas AJAX is a client-side programming language that runs on the browser.
+
+=====================================================================>>>>
+
+Popular Node.js frameworks include Express.js, NestJS, Koa.js, Hapi.js, Meteor.js, and Next.js.
+
+=====================================================================>>>>
+
+const http = require('http');
+
+// Create a server object
+http.createServer(function (req, res) {
+    res.write('Hello World!'); 
+    res.end();
+}).listen(3000);
+
+
+=====================================================================>>>>
+The most famous Node.js framework used is Express.js as it is highly scalable, efficient, and requires very few lines of code to create an application.
+
+
+=====================================================================>>>>
+
+. What is buffer in Node.js?
+
+.> The Buffer class in Node.js is used to perform operations on raw binary data.
+
+.> Buffer refers to the particular memory location in memory.
+
+.> Buffers only deal with binary data, and it can not be resizable.
+
+
+
+
+=====================================================================>>>>
+
+3. What are streams in Node.js?
+
+Streams are objects  a type of data-handling methods.
+
+
+..> Streams are objects that enable you to read data or write data continuously.
+..>  Streams are used to handle reading/writing files or exchanging information in an efficient way. 
+
+..> Readable stream: It is the stream from where you can receive and read the data.
+fs.createReadStream() lets us read the contents of a file.
+
+..> Writable stream: It is the stream where you can send data ,but you are not allowed to receive it back. 
+ fs.createWriteStream() lets us write data to a file.
+
+..> Duplex stream: It is the stream that is both readable and writable.
+
+..> Transform stream: It is the stream that is used to modify the data.
+
+
+
+const fs=require('fs');
+
+
+const r=fs.createReadStream('demo.txt','utf8');
+
+r.on('data',(chunk)=>{
+
+console.log('received chunk:',chunk);
+
+})
+
+r.on('error',(err)=>{
+
+console.log('ERROR:',err);
+
+});
+
+
+
+=====================================================================>>>>
+
+4. Explain crypto module in Node.js
+
+..> The crypto module is used for encrypting, decrypting, or hashing any type of data
+
+..> npm install crypto-js --save
+
+ RSA, SHA, etc are Widely used algorithms for hashing.
+
+
+ex:
+
+// Importing module
+const SHA256 = require("crypto-js/sha256");
+const plaindata = "GeeksForGeeks"
+const hasheddata = SHA256(plainText).toString()
+console.log(hasheddata)
+
+------------------------------------------>
+const crypto=require("crypto-js");
+
+const data="This is the data that need to be encrypted"
+
+const key="password@123";
+
+//Encryption 
+
+const p=crypto.AES.encrypt(data,key).toString();
+
+console.log(p)
+
+// decryption
+
+const d=crypto.AES.decrypt(p,key).toString(crypto.enc.Utf8);
+
+console.log(d)
+
+
+AES (Advanced Encryption Standard) is an algorithm
+
+
+=====================================================================>>>>
+
+0. Explain the use of passport module in Node.js
+
+.> The passport module is used for adding authentication features to our website or web app.
+=====================================================================>>>>
+50. What are child processes in Node.js?
+Usually, Node.js allows single-threaded, non-blocking performance but running a single thread in a CPU cannot handle increasing workload hence the child_process module can be used to spawn child processes. The child processes communicate with each other using a built-in messaging system. 
+
+
+
+
+
+=====================================================================>>>>
+29. What is the difference between spawn() and fork() method?
+
+.> Both these methods are used to create new child processes .
+.> That spawn() method creates a new function that Node runs from the command line.
+
+.> whereas fork() function creates an instance of the existing fork() method
+
+
+
+=====================================================================>>>>
+3. What is body-parser in Node.js?
+
+.> body-parser is a middleware used in Node.js to parse incoming request bodies in HTTP requests, making it easier to access data sent by clients.
+
+.> npm install body-parser
+
+.>
+
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const app = express();
+
+// Use body-parser middleware to parse JSON
+app.use(bodyParser.json());
+
+app.post('/user', (req, res) => {
+  
+  const { name, age } = req.body;
+  res.send(`Hello, ${name}`);
+});
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
+
+
+=====================================================================>>>>
+
+Session management can be done in node.js by using the express-session module. It helps in saving the data in the key-value form. 
+
+
+=====================================================================>>>>
+setImmediate() and process.nextTick() are both used to schedule code execution asynchronously, 
+
+.> setImmediate(): Executes current  after I/O operations are completed.
+
+console.log('Start');
+
+process.nextTick(() => {
+  console.log('process.nextTick');
+});
+
+setImmediate(() => {
+  console.log('setImmediate');
+});
+
+console.log('End');
+
+
+
+Start
+End
+process.nextTick
+setImmediate
+
+
+process.next.Tick() : When it runs: It schedules a callback to be executed immediately after the current operation completes, before any other I/O or timer events.
+
+
+=====================================================================>>>>
+
+..> The URL module in Node.js provides various utilities for URL resolution and parsing. It is a built-in module that helps split up the web address into a readable format.
+
+
+const url = require('url');
+
+
+const myURL = 'https://example.com:8080/path?name=John&age=30';
+
+
+const pa = url.parse(myURL, true);
+
+ // `true` parses the query string into an object
+
+// Access different parts of the URL
+console.log('Protocol:', pa.protocol);       // 'https:'
+console.log('Host:', pa.host);              // 'example.com:8080'
+console.log('Pathname:', pa.pathname);      // '/path'
+console.log('Query Parameters:', pa.query); // { name: 'John', age: '30' }
+console.log('Fragment:', pa.hash);          // '#section1'
+
+# :Setting true as the second argument makes query an object instead of a string.
+
+
+=====================================================================>>>>
+ 40. What is piping in Node.js?
+
+ans :
+
+Piping is a mechanism used to connect the output of one stream to another stream. It is normally used to retrieve data from one stream and pass output to another stream
+
+=====================================================================>>>>
+ 41. How do you open a file in Node.js? simple example
+
+const fs=require('fs');
+
+fs.open("demo.txt", 'r',(err,fileDescription) =>{
+
+	if(err){
+	console.error("Error opening file:",err) ;
+		}
+	console.log("file opend successfully." ,fileDescription);
+
+	fs.close(fileDescriptor,(err) => {
+	
+		if(err){
+			console.log("error closing:",err)
+
+		      }
+		err console.log("file closed successfully.");
+			})
+});
+
+	     
+
+
+
+
+
+=====================================================================>>>>
+
+44) What is a reactor pattern in Node.js ?
+
+ANS: A reactor pattern is a concept of non-blocking I/O operations. T
+
+
+
+=====================================================================>>>>
+
+
+55  Describe Node.js exit codes.?
+
+exit codes are the set of  specific codes which are used for finishing a specific process.
+
+
+
+
+=====================================================================>>>>
+
+66. Are there any disadvantages to using Node.js?
+..> Node.Js is not suitable for CPU-intensive tasks. This is because Node.js is single-threaded, meaning it can only execute one task at a time.
+
+..> Node.js is not suitable for applications that require a lot of memory. This is because Node.js uses a lot of memory for each connection. If you have a large number of connections, it can quickly consume a lot of memory.
+
+=====================================================================>>>>
+68. What is the difference between Node.js and Ajax?
+
+ans: Ajax is a client-side technology that allows for asynchronous communication between the client and the server.
+
+.> it is used to update the web page without full page reloading. requiring 
+
+=====================================================================>>>>
+
+70. Does Node run on Windows?
+
+.> Yes, Node.js runs on Windows. Node.js is a cross-platform runtime environment, which means that it can run on a variety of operating systems, including Windows, macOS, and Linux.
+
+
+=====================================================================>>>>
+Can you access DOM in Node?
+
+No, you cannot access the DOM in Node.js. The DOM is a browser-specific API that allows for the manipulation of HTML and XML documents. 
+Since Node.js does not run in a browser, it does not have access to the DOM.
+=====================================================================>>>>
+
+74. What is "non-blocking" in node.js?
+
+In Node.js, non-blocking refers to the ability of the runtime environment to execute multiple tasks simultaneously without waiting for the completion of one task before starting the next. This is achieved through the use of asynchronous I/O operations, which allow Node.js to handle multiple requests concurrently. 
+=====================================================================>>>>
+
+
+
+
+
+
+
+=====================================================================>>>>
+The event-based model allows for non-blocking I/O operations, which means that Node.js can handle a large number of connections without using a lot of resources.
+
+=====================================================================>>>>
+
+Explain the concept of stub in Node.js.
+
+In Node.js, a stub is a function which acts as the  as a placeholder for the larger more complex functions. 
+
+Stubs are typically used in unit testing to replace a real function with a simplified version that returns a predetermined value.
+
+=====================================================================>>>>
+
+
+82. What are global objects in Node.js?
+
+Global objects in Node.js are objects that are available in all modules without the need for an explicit require statement. Some of the most commonly used global objects in Node.js include process, console, and buffer.
+
+
+=====================================================================>>>>
+
+ Why is assert used in Node.js?
+An assert module is an important tool for writing effective tests in Node.js.
+
+
+=====================================================================>>>>
+89) Define the concept of the test pyramid. Please explain the process of implementing them in terms of HTTP APIs. ?
+
+The test pyramid is a concept that used in software testing . 
+
+The pyramid consists of three layers: unit tests, integration tests, and end-to-end tests.
+
+ The idea is that the majority of tests should be at the unit level, with fewer tests at the integration and end-to-end levels.
+=====================================================================>>>>
+
+
+
+
+=====================================================================>>>>
+
+
+=====================================================================>>>>
+
+
+How to get information about a file in Node.js?
+
+In Node.js, the fs module provides methods for working with the file system. To get information about a file, you can use the fs. stat() method. The fs. stat() method returns an object that contains information about the file, such as the file size, creation date, and modified date.
+
+=====================================================================>>>>
+What is the difference between readFile and create Read Stream in Node.js?
+
+Create Read Stream is a better option for reading large files, while the read file is a better option for small files. It is important to choose the right method based on the size of the file and the requirements of the application.
+
+
+=====================================================================>>>>
+
+How to measure the performance of async operations?
+
+by using the benchmark.js and prof flags.
+
+
+=====================================================================>>>>
+
+ How to measure the duration of async operations?
+
+The console.time and console.timeEnd methods allow you to measure the duration of a block of code. The console.time method is used to start the timer and the console.timeEnd method is used to stop the timer and log the duration to the console.
+
+=====================================================================>>>>
+
+How are worker threads different from clusters?
+
+..> worker threads provide a way to create multiple threads within a single process.
+
+..> clusters create multiple instances of a Node.js process, each running on a separate CPU core.
+
+..> 
+
+
+=====================================================================>>>>
+
+What is a thread pool, and which library handles it in Node.js?
+
+A thread pool is a collection of threads that are used to execute tasks in parallel. In Node.js, the thread pool is handled by the libuv library, which is a multi-platform support library that provides asynchronous I/O operations.
+
+
+
+
+=====================================================================>>>>
+different token in nodejs ?
+
+..> Tokens in Node.js are small pieces of data used to ensure secure communication, authorization, and authentication. 
+
+..>  It contains information that can be used to identify or authorize a user or service. 
+
+Different Types of the Tokens:
+---------------------------------->
+1) JSON Web Token (JWT) 
+---------------------------------->
+---------------------------------->
+
+ A compact, self-contained token used for securely transmitting information between parties.
+
+..> hashing algorithm used (HS256 by default in this case).
+
+..> Structure: Three parts: Header, Payload, and Signature
+
+Header: Contains metadata like the type of token (JWT) and the algorithm used (e.g., HMAC, RSA).
+
+Payload: Contains claims (user information like id, email, or roles).
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.{ Header }
+eyJ1c2VySWQiOjEyMywiZXhwIjoxNzAzMjE2NDY1fQ. {PayLoad}
+eVu1N0-V6RQyqxwEwLiRNNRzU7vCQs9JoTbXnNQNejs { signature }
+
+2) Access Token :
+---------------------------------->
+---------------------------------->
+
+..> A short-lived token that allows a user or app to access specific resources.
+
+..>  Used in APIs to verify that a user is authorized to access a resource.
+
+User logs in.
+Server issues an access token.
+User sends the token with requests to access resources.
+
+3) Refresh Token:
+---------------------------------->
+---------------------------------->
+..> A longer-lived token used to generate new access tokens after they expire.
+
+
+..>  Access tokens expire quickly for security. A refresh token lets the user stay logged in without logging in again.
+
+..> User logs in and gets both an access token and a refresh token.
+
+..> When the access token expires, the user sends the refresh token to get a new access token.
+
+
+4) CSRF Token:
+---------------------------------->
+---------------------------------->
+
+..> A token used to protect against Cross-Site Request Forgery (CSRF) attacks.
+ 
+..> Ensures that requests made to your server come from your application, not an attacker.
+
+..> A CSRF token is sent to the client, and the client includes it in requests to verify its authenticity.
+
+
+5) Bearer Token:
+---------------------------------->
+---------------------------------->
+
+A token sent in the Authorization header of an HTTP request.
+
+
+note: Stateless: Tokens make it easier to build stateless systems since the token carries all the necessary information.
+
+========================================================================================>>>>=====================================================================>>>>==================================================>>>>
+
+JWT Phases Explained in Simple Terms
+
+..> A JWT (JSON Web Token) is a compact and secure way to transmit information between parties.
+
+...> It has three main phases when used in an application: Creation, Transmission, and Verification
+
+
+Creation Phase :
+------------------>
+What happens?
+
+1) A user logs in or authenticates (e.g., with a username and password).
+2) The server generates a token with the user's information (called "claims") and signs it using a secret key or private key.
+3) The JWT is sent back to the user.
+
+Transmission Phase :
+------------------------->
+This is when the JWT is sent from the user to the server in each request.
+
+1) The client stores the JWT (usually in localStorage, sessionStorage, or cookies).
+2) When the user makes a request to access a protected resource, the JWT is sent along with the request.
+3) How is it sent? The JWT is typically included in the HTTP Authorization header:
+Authorization: Bearer <JWT>
+
+Verification Phase :
+---------------------------->
+This is where the server checks if the JWT is valid.
+
+1) The server receives the request with the JWT.
+2) The server decodes the JWT and verifies:
+Signature: Ensures the token hasn’t been tampered with (using the secret key).
+Expiration: Checks if the token has expired.
+Claims: Validates the data inside the token (e.g., user ID, roles).
+
+
+=====================================================================>>>>
+
+How we can route the middleware:
+
+..> Middleware in Node.js (specifically with Express.js) is like a pipeline that processes requests step by step before they reach the final handler (like a route or API endpoint).
+
+..>  Routing middleware means applying middleware functions to specific routes.
+
+..> Middleware is a function that runs when a request is received.
+
+..> It can:
+
+Modify the request (req) or response (res).
+End the request-response cycle.
+Pass control to the next middleware using next().
+
+
+/// Global Middleware (Applies to All Routes)  ///
+
+const express = require('express');
+const app = express();
+
+// Example middleware
+app.use((req, res, next) => {
+    console.log('Global Middleware');
+    next(); // Passes control to the next middleware or route
+});
+
+app.get('/', (req, res) => {
+    res.send('Home Page');
+});
+
+app.get('/about', (req, res) => {
+    res.send('About Page');
+});
+
+app.listen(3000, () => console.log('Server running on port 3000'));
+
+in console:
+Global Middleware
+Global Middleware
+
+for /
+Home page
+
+for /about
+About Page
+
+
+
+//// Route-Specific Middleware ////
+
+// Middleware for a specific route
+const logMiddleware = (req, res, next) => {
+    console.log('Middleware for /profile route');
+    next(); // Pass to the route handler
+};
+
+app.get('/profile', logMiddleware, (req, res) => {
+    res.send('Profile Page');
+});
+
+app.get('/dashboard', (req, res) => {
+    res.send('Dashboard Page');
+});
+
+Requesting /profile'
+-------------------------->
+Middleware for /profile route {in console  }
+Profile Page
+
+Requesting /dashboard :
+-------------------------->
+Dashboard Page
+
+///////// Middleware for a Group of Routes (Router-Level Middleware) /////
+
+..> Use express.Router() to apply middleware to groups of related routes.
+
+
+const express = require('express');
+const app = express();
+const router = express.Router();
+
+// Middleware for all routes in the router
+router.use((req, res, next) => {
+    console.log('Middleware for user routes');
+    next();
+});
+
+router.get('/login', (req, res) => {
+    res.send('Login Page');
+});
+
+router.get('/signup', (req, res) => {
+    res.send('Signup Page');
+});
+
+app.use('/user', router); // Apply router middleware for '/user' paths
+
+app.listen(3000, () => console.log('Server running on port 3000'));
+
+
+
+/////// Error-Handling Middleware //////
+
+Middleware can also handle errors.
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something went wrong!');
+});
+
+
+
+
+=====================================================================>>>>
+
+.ENV FILE 
+----------->
+The .env file and process.env are used to store environment variables in a Node.js application , used to store the Global variables here,
+
+..> The .env file is a simple text file where you can store sensitive information or configuration settings, like database credentials, API keys, and environment-specific settings (e.g., development or production).
+
+What is process.env?
+process.env is a special object in Node.js that holds all the environment variables.
+
+.> It allows you to access the values stored in the .env file from your code.
+
+..> You load the values from the .env file into process.env using a library like dotenv.
+
+.> 
+=====================================================================>>>>
+difference between the readFile  and readFileSync:
+
+..> Reads the file asynchronously, meaning it does not block the program while reading.
+
+..> Your program can continue doing other tasks while the file is being read.
+..> When the file is ready, a callback function is executed to handle the result.
+
+const fs = require('fs');
+
+fs.readFile('example.txt', 'utf8', (err, data) => {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    console.log(data); // Prints file content
+});
+
+console.log('This runs while the file is being read!');
+
+
+This runs while the file is being read!
+<file content appears here once reading is done>
+
+readFileSync:
+
+Reads the file synchronously, meaning it blocks the program until the file is completely read.
+
+.> Your program pauses and waits for the file operation to finish before moving to the next line.
+
+const fs = require('fs');
+
+const data = fs.readFileSync('example.txt', 'utf8');
+console.log(data); // Prints file content
+
+console.log('This runs after the file is read!');
+
+<file content appears here>
+This runs after the file is read!
+
+
+=====================================================================>>>>
+
+app.use(express.json()) and body-parser DIFFERENCES :
+
+..> In Node.js, app.use(express.json()) and body-parser are both used to handle incoming JSON data in HTTP requests, 
+
+
+app.use(express.json())
+=---------------------------->
+
+.> It is a built-in middleware in Express (since version 4.16.0).
+
+.> Used to parse incoming JSON data in the request body.
+
+.> It automatically converts JSON data into a JavaScript object, so you can access it directly in your code.
+
+
+.> parse" means to read, analyze, and extract information from the incoming request body in a format that your server can understand and work with.
+
+body-parser:
+--------------->
+
+.> It is an external library that was commonly used before Express added built-in middleware for handling JSON.
+
+.> It has many features, such as parsing JSON, URL-encoded data, and raw/buffered data.
+
+=====================================================================>>>>
+CORS:
+
+npm install cors
+
+....> cors middleware package
+
+.> 
+
+
+.> The frontend (running on http://localhost:3000) makes a request to the backend (running on http://localhost:5000).
+
+.> The backend uses app.use(cors()) to set the CORS headers in the HTTP response.
+.> The browser sees these headers and allows the frontend to access the backend's response.
+=====================================================================>>>>
+
+What is bcrypt in Node.js?
+
+.> bcrypt is a popular library in Node.js used for hashing passwords securely.
+
+.> Hashing is a one-way process (you can't "decrypt" a hash).
+
+.> It helps protect user passwords by transforming them into a secure, irreversible format.
+
+.> Irreversible: Hashing creates a fixed-length representation of data, and it’s not possible to reverse the hash to get the original password.
+
+.> Salting: bcrypt adds a random value (salt) to the password before hashing, making it harder for attackers to guess passwords using precomputed hash  tables (rain tables).
+
+.> npm install bcrypt
+
+const bcrypt = require('bcrypt');
+
+// Hash a password
+const plainTextPassword = 'mysecretpassword';
+const saltRounds = 10; // Higher = more secure but slower
+
+bcrypt.hash(plainTextPassword, saltRounds, (err, hash) => {
+    if (err) {
+        console.error('Error hashing password:', err);
+    } else {
+        console.log('Hashed password:', hash);
+    }
+});
+
+
+
+
+..> bcrypt.compare is a method provided by the bcrypt library, a popular Node.js library used for hashing passwords and securely comparing them.
+
+
+bcrypt is a library for hashing and securely storing passwords.
+
+It provides methods for:
+Hashing passwords (bcrypt.hash)
+Comparing passwords (bcrypt.compare)
+
+
+const bcrypt = require('bcrypt');
+
+// Example of a hashed password
+const hashedPassword = '$2b$10$somereallylonghashedpassword';
+const plainPassword = 'mysecretpassword';
+
+// Compare plain password with hashed password
+bcrypt.compare(plainPassword, hashedPassword, (err, isMatch) => {
+    if (err) {
+        console.error('Error comparing passwords:', err);
+        return;
+    }
+
+    if (isMatch) {
+        console.log('Passwords match!');
+    } else {
+        console.log('Passwords do not match.');
+    }
+});
+
+
+
+
+note: JWT is for token-based authentication.
+Tokens are used to verify a user's identity after they log in.
+Tokens do not contain sensitive data like passwords (only claims like userId, email, or roles).
+
+=====================================================================>>>>
+
+..> Why do we use Bearer in the Authorization header?
+
+.>>The Authorization header is part of HTTP requests used to send credentials (like tokens) that prove the identity of the client making the request. 
+
+.>>  Bearer, it is a specific type of authorization scheme that tells the server that the token included in the header is a bearer
+
+.>> A bearer token is a kind of token that grants access to a resource. The server can "bear" the token and accept it for authentication.
+
+
+.>The reason Bearer is used is that it is the standard keyword in most authentication protocols like JWT,OAuth 2.0.
+
+
+.> Bearer: It means "the person who is holding this token".
+
+.> If you have the token, you are authorized to access the resource associated with that token.
+
+
+.> In OAuth 2.0 and JWT (JSON Web Tokens), the token is usually passed in the Authorization header with the Bearer scheme. 
+
+
+=====================================================================>>>>
+
+
+=====================================================================>>>>
+
+=====================================================================>>>>
+
+
+=====================================================================>>>>
+
+
+=====================================================================>>>>
+
+=====================================================================>>>>
