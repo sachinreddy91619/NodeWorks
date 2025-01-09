@@ -1,0 +1,416 @@
+
+
+
+..> I have added my biometric today, so kindly accept my attendance request.
+
+
+...> const Todo = require('../MODELS/Todo');
+The file system is case-sensitive, so MODELS should probably be models (lowercase).
+
+...> app.use('/', curdRout);    // Routes should come after body parsing and CORS
+
+
+...> multer data sending in to the mongo data base. 
+
+
+
+sachin09:
+
+app.js
+=============>
+
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+const curdRout = require('./routes/curdRoutes')
+
+const app = express();
+
+
+// loading environment variables
+require('dotenv').config();
+
+app.use(express.json());
+//app.use(cors());
+
+// database connection :
+
+mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true, useUnifiedTopology: true
+
+}).then(() => {
+    console.log("database connected")
+})
+    .catch((err) => {
+        console.log("MongoDb connection error:", err)
+    })
+
+
+app.use((err, req, res,next) => {
+    console.log(err.stack);
+    res.status(500).json({ error: "Internal server error" })
+})
+
+app.use('/k', curdRout)
+// server setup:
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT,()=>{
+    console.log(`server is running on port ${PORT}`)
+});
+
+
+
+..................>
+controllers:
+CurdOper.js
+
+const Todo = require('../models/Todo')
+
+// creation of the To do list ;
+
+exports.createTodo = async (req, res) => {
+    const { title, items, number ,userId } = req.body;
+
+    try {
+        const todo = new Todo({
+            title,
+            items,
+            number,
+            userId:userId
+
+        });
+        await todo.save();
+        res.status(200).json(todo);
+
+
+    } catch (err) {
+        res.status(400).json({ error: err.message })
+    }
+};
+
+
+// get the todo list items;
+
+
+exports.gettodo = async (req, res) => {
+
+    try {
+
+        const todos = await Todo.find({});
+
+        res.json(todos)
+    }
+    catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+
+};
+
+// to get the todo items by id:
+
+
+exports.gettodoByid = async (req, res) => {
+
+    try {
+
+        const todo = await Todo.findById(req.params.id);
+
+        if (!todo) {
+            return res.status(404).json({ error: 'To-do-nOT-FOUND' })
+        }
+        res.json(todo)
+
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+
+// update a particular to-do-item :
+
+exports.updateTodo = async (req, res) => {
+    const { title, items, number } = req.body;
+
+    try {
+
+        const todo = await Todo.findById(req.params.id);
+
+        if (!todo) {
+            return res.status(404).json({ error: 'To-Do not Found' });
+
+        }
+
+        if (title) {
+            todo.title = title;
+
+        }
+
+        if (items) {
+            todo.items = items;
+        }
+
+        if (number) {
+            todo.number = number
+        }
+        res.json(todo)
+
+    }
+    catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+
+
+// delete the todo list :
+
+exports.deleteTodo = async (req, res) => {
+
+    try {
+
+        const todo = await Todo.findById(req.params.id)
+
+        if (!todo) {
+            return res.status(404).json({ error: 'To-Do not found' });
+        }
+
+        await todo.deleteOne();
+
+
+
+        res.json({ message: 'To-d0 DELETED SUCCessfully' });
+
+    } catch (err) {
+        res.status(400).json({ error: err.message })
+    }
+};
+
+
+
+
+........................>
+models:
+Todo.js
+
+const mongoose=require('mongoose');
+
+
+const todoschema=new mongoose.Schema({
+    title:{
+        type:String,required:true
+    },
+    items:{
+        type:String
+    },
+    number:{
+        type:Number
+    },
+   
+
+
+
+});
+
+
+module.exports=mongoose.model('Todo',todoschema);
+
+...............................>
+
+routes:
+curdRoutes.js
+
+
+const express = require('express');
+
+const { createTodo, gettodo, gettodoByid, updateTodo, deleteTodo } =
+    require('../controllers/curdoper');
+
+const router = express.Router();
+
+
+router.post('/', createTodo);
+
+router.get('/', gettodo);
+
+router.get('/:id', gettodoByid);
+
+router.put('/:id', updateTodo);
+
+router.delete('/:id', deleteTodo)
+
+module.exports = router;
+
+
+
+.................> 
+.env
+
+PORT=5566
+MONGO_URL="mongodb://127.0.0.1:27017/demoURL"
+
+
+
+
+=====================================>======================>======================>======================>======================>======================>======================>======================>======================>=======>
+
+
+uploading the files in to the MongoDB:
+------------------------------------------>
+
+For one reason or another, you may want to store a big data file that is larger than 16MB in MongoDB. This is where GridFS mongoose comes in. Grid FS is a feature in MongoDB that breaks data files more than 16MB into smaller parts. This lets you store your data file as multiple documents in MongoDB.
+
+
+..>
+{ useNewUrlParser: true, useUnifiedTopology: true } are commonly used when connecting to a MongoDB database using the Mongoose library in Node.js.
+
+useNewUrlParser: true
+==============================>
+
+..> Purpose: This option tells Mongoose to use the new MongoDB connection string parser that MongoDB introduced in version 3.6 of the Node.js driver.
+
+Prior to version 3.6, MongoDB's connection string parser was less flexible and didn't handle certain URL formats properly. The new parser offers better support for modern connection string formats and fixes several bugs in the old parser.
+
+
+..> The new parser improves the connection process and reduces warnings about deprecated URL parsing behavior. It ensures that the connection URL is parsed in a way that aligns with the MongoDB URI specification.
+
+useUnifiedTopology: true
+==============================>
+
+...> Purpose: This option enables the use of the new Server Discovery and Monitoring engine, which was introduced in MongoDB driver version 3.6.
+
+...> The useUnifiedTopology option enables the new engine that provides more reliable monitoring of server states, improved connection management, and better handling of replica sets.
+
+
+...> 
+
+
+======================================================>======================>======================>======================>======================>======================>======================>======================>======================>=======>=====
+
+...> multer file uploading into DATABASE :
+
+const express=require('express');
+
+const mongoose=require('mongoose');
+
+const multer=require('multer');
+
+
+const app=express();
+
+
+// conection to the database :
+
+mongoose.connect('mongodb://127.0.0.1:27017/fileupload',{ useNewUrlParser: true, useUnifiedTopology: true }).then(()=>{
+    console.log('connected to the database successfully'); }).catch((err)=>{
+        console.log('failed to connect to the database');
+
+    })
+
+
+    // file setup for multer file uploads:
+
+    const storage=multer.memoryStorage();
+
+    const upload=multer({storage:storage});
+
+
+
+    // defining a mongoose schema:
+
+    const fileschema= new mongoose.Schema({
+
+        filename:String,
+        data:Buffer,
+        contentType:String
+
+    });
+
+    const File=mongoose.model('File',fileschema);
+
+
+
+app.post('/upload',upload.single('file'),async(req,res)=>{
+
+    try{
+
+        const newFile=new File({
+            filename:req.file.originalname,
+            data:req.file.buffer,
+            contentType:req.file.mimetype
+        });
+
+        await newFile.save();
+
+        res.status(200).send('File uploaded successfully');
+
+    }catch(err){
+        console.log("Error uploading file",err);
+        res.status(500).send('erro uploading file');
+    }
+    
+})
+
+
+
+
+    app.listen(4455,()=>{
+        console.log('Server is running on port 4455');
+    })
+
+
+
+
+
+//     ////////"main": "index.js",
+//   "scripts": {
+//     "start":"node app.js",
+//     "dev":"nodemon app.js",
+
+
+
+// postman configuration:
+
+// for uploading the files of text formatt
+// Example of Correct Postman Configuration:
+// HTTP Method: POST
+// URL: http://127.0.0.1:4455/upload
+// Body: Choose form-data and select the file field:
+// Key: file
+// Value: Choose the file you want to upload,
+
+// for uplaoding the files of image formatt
+// Example of Correct Postman Configuration:
+// HTTP Method: POST
+// URL: http://127.0.0.1:4455/upload
+// Body: Choose form-data and select the file field:
+// Key: file
+// Value: Choose the file you want to upload,
+
+......> db.files.find({contentType:"image/jpeg"});
+
+
+db.files.updateMany({contentType:"image/jpeg"},{$set
+
+
+
+use fileupload;
+
+db.files.updateMany(
+  { contentType: "image/png" },
+  { $set: { contentType: "mongoimg" } }
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
