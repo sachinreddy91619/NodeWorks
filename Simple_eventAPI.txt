@@ -1,0 +1,370 @@
+
+
+Date data type stores date. It is a 64-bit integer which represents the number of milliseconds.
+
+...> date, it can be returned either as a string or as a date object. 
+
+....>Date(): It returns the current date in string format.
+
+
+....> new Date(): Returns a date object. Uses the ISODate() wrapper. 
+
+
+I need the column name has the date and its value has todays date in mongodb
+
+
+
+let today=new Date();
+
+let date=today.toISOString().split('T')[0]
+
+db.sales.updateMany({},
+{
+$set:{date:date}
+});
+
+
+...........................>................................>>...................................>
+
+eventdate: {
+        type: Date,
+        default: () => {
+            // Set the time part to midnight (start of the day)
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);  // Set time to 00:00:00.000
+            return today;
+        }
+    }
+
+
+
+............> how to give the data input in the post man when we have the model in this way
+
+
+Provide the JSON data in the body. Here's an example JSON body:
+json
+Copy code
+{
+    "eventname": "Music Concert",
+    "foodcatering": "Pizza and Drinks",
+    "peopleattendance": 500,
+    "eventlocation": "Central Park"
+}
+Note: You do not need to include eventdate in the body because it is set automatically to the current date due to the default: Date.now property in your Mongoose model.
+
+
+..............> 
+
+ eventdate:{
+        type:Date,
+        default: Date.now , // This will set today's date as the default value
+
+        required:true
+    },
+
+note: in this case we get error when we try to update the date using the postman:
+
+
+===========================================>
+
+event manger simple API:
+
+
+
+
+
+controllers
+.>eventopera.js
+
+const Event=require('../models/Event');
+
+// creation of the event :
+exports.createEvent=async(req,res)=>{
+    const {eventname,amountrange,eventdate,foodcatering,
+        peopleattendance,eventlocation}=req.body;
+
+        
+        try{
+            const event=new Event({
+                amountrange,
+            
+                eventname,
+                foodcatering,
+                peopleattendance,
+                eventlocation
+            });
+            await event.save();
+            res.status(200).json({event});
+        }catch (err){
+            res.status(400).json({error:err.message});
+
+        }
+
+
+};
+
+// get the all events:
+
+exports.gettheevent=async(req,res)=>{
+    try{
+
+        const event= await Event.find({});
+        res.json(event);
+
+    }catch(err){
+        res.status(400).json({error:err.message});
+    }
+};
+
+
+// to get the event by id :
+
+exports.gettheeventbyid=async(req,res)=>{
+
+
+    try{
+
+        const event=await Event.findById(req.params.id);
+
+        if(!event){
+            return res.status(400).json({error:"event not found"});
+        }
+        res.json(event);
+
+
+    }catch(err){
+        res.status(400).json({error:err.message});
+    }
+}
+
+// update a particular event :
+exports.updateevent=async(req,res)=>{
+
+    const {eventname,eventdate,foodcatering,
+        peopleattendance,eventlocation}=req.body;
+
+        try{
+
+            const event=await Event.findByIdAndUpdate(req.params.id)
+            if(!event){
+                return res.status(404).json({error:"Event Not found"});}
+
+                if(eventname){
+                    event.eventname=eventname;
+                }
+
+                if(eventdate){                
+                    event.eventdate=eventdate;
+                }               
+
+                if(peopleattendance){                
+                    event.peopleattendance=peopleattendance;
+            }
+
+            if(eventlocation){                
+                event.eventlocation=eventlocation;
+            }            
+
+            if(foodcatering){                
+                event.foodcatering=foodcatering;
+            }
+
+            const updatedevent=await event.save();
+            res.json(updatedevent); 
+
+        } catch(err){
+            res.status(400).json({error:err.message});
+
+        }
+
+
+
+}
+
+// delete the event by id:
+exports.deleteevent=async(req,res)=>{
+    try{
+        const event=await Event.findById(req.params.id);
+        if(!event){
+            return res.status(404).json({error:'event not found'});
+
+            }
+        await event.deleteOne();
+
+        res.json({message:'event deleted'});
+
+    }catch(err){
+        res.status(400).json({error:err.message});
+
+    }
+}
+
+
+....................................>
+middleware
+.>authmid
+
+
+
+module.exports=(req,res,next)=>{
+
+    const {amountrange}=req.body;
+
+    if(!amountrange){
+        return res.status(400).json({error:"amount is required"});
+    }
+
+    if (amountrange<=50000){
+        return res.status(400).json({error:"amount should be greater then 50,000"})
+
+    }
+
+    next();
+
+
+};
+
+
+................> 
+models
+.>Events.js
+
+const mongoose=require('mongoose');
+
+const eventschema=new mongoose.Schema({
+
+    amountrange:{
+        type:Number
+    },
+
+    eventname:{
+
+   type:String,required:true
+    },
+    eventdate:{
+        type:Date,
+        default: Date.now , // This will set today's date as the default value
+
+        required:true
+    },
+
+    foodcatering:{
+        type:String
+    },
+    peopleattendance:{
+        type:Number,
+        required:true
+    },
+    eventlocation:{
+        type:String,
+        required:true
+    }
+
+
+});
+
+
+
+module.exports=mongoose.model('Event',eventschema);
+
+
+
+
+............> 
+routes
+.>eventroutes.js
+
+
+
+const express=require('express');
+
+
+
+const {createEvent,gettheevent,gettheeventbyid,updateevent,deleteevent}=require('../controllers/eventopera');
+
+const auth=require('../middleware/authmid');
+
+
+
+const router=express.Router();
+
+router.post('/',auth,createEvent);
+
+router.get('/',gettheevent);
+
+router.get('/:id',gettheeventbyid);
+
+router.put('/:id',updateevent);
+
+router.delete('/:id',deleteevent);
+
+module.exports=router;
+
+
+....................> 
+.env
+PORT=3001
+
+
+MONGO_URL="mongodb://127.0.0.1:27017/eventdb"
+
+...............> 
+app.js
+const  express=require('express');
+
+const mongoose=require('mongoose');
+
+const dotenv=require('dotenv');
+
+const curdRout=require('./routes/eventroutes');
+
+
+dotenv.config();
+
+
+const app=express();
+
+
+app.use(express.json());
+
+
+// connection to the database:
+
+mongoose.connect(process.env.MONGO_URL,{
+    useNewUrlParser:true,
+    useUnifiedTopology:true
+
+}).then(()=>{
+    console.log("Connected to the database");
+
+
+}).catch( (err)=>{
+    console.log('Mongodb error connection ',err);
+})
+
+
+
+app.use((err,req,res,next)=>{
+    console.log(err.stack);
+    res.status(500).send({error:"iNTERNAL SERVER ERROR"})
+})
+
+
+app.use('/k',curdRout);
+
+const PORT=process.env.PORT || 3000;
+
+app.listen(PORT,()=>{
+    console.log(`SERVER IS RUNNING ON THE PORT ${PORT}`);
+
+})
+
+
+
+
+
+
+
+
+
+
